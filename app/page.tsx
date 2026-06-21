@@ -534,7 +534,10 @@ export default function HomePage() {
         </div>
         <div className="footer-bottom">
           <span>brw.donworks.co.uk</span>
-          <span>Open source by Revitt · AGPL-3.0</span>
+          <span>
+            <Link href="/privacy">Privacy</Link> · Open source by Revitt ·
+            AGPL-3.0
+          </span>
         </div>
       </footer>
     </>
