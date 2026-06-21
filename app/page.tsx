@@ -26,6 +26,10 @@ type PanelItem = {
 };
 
 const brwUrl = "https://github.com/Don-Works/brw";
+const extensionId = "amocjcgddnoakjijfggdpnefdnboilpe";
+// Unlisted Chrome Web Store install URL. Set this once the item is published;
+// until then the Install section shows the manual (load-unpacked) route only.
+const chromeStoreUrl = "";
 const donworksSite = "https://donworks.co.uk";
 const donworksGithub = "https://github.com/Don-Works";
 const mcplexerUrl = "https://mcplexer.com";
@@ -150,6 +154,7 @@ export default function HomePage() {
           <a href="#what">What</a>
           <a href="#features">Features</a>
           <a href="#quickstart">Quick start</a>
+          <a href="#install">Install</a>
           <a href="#safety">Safety</a>
           <Link href={brwUrl} target="_blank" rel="noopener noreferrer">
             GitHub
@@ -372,6 +377,88 @@ export default function HomePage() {
                   <span className="prompt">$ </span>curl -s 127.0.0.1:17310/api/page/snapshot | jq
                 </code>
               </pre>
+            </div>
+          </div>
+        </section>
+
+        <section id="install" className="section">
+          <div className="section-inner split-layout">
+            <div className="section-header section-header-sticky">
+              <p className="section-kicker">install</p>
+              <h2>Add the Chrome extension</h2>
+              <p>
+                The brw extension bridges the daemon to your real, signed-in
+                Chrome over <code>ws://127.0.0.1</code>. It drives visible tabs
+                through the debugger protocol and{" "}
+                <strong>never reads cookies, passwords or passkeys</strong>.
+              </p>
+              <p>
+                It ships with one permanent extension ID, so the daemon trusts
+                it with zero config:
+              </p>
+              <p className="install-id">
+                <code>{extensionId}</code>
+              </p>
+            </div>
+            <div className="stacked-panels">
+              <div className="install-route">
+                <p className="install-route-head">
+                  <span className="install-badge">manual</span>
+                  Load unpacked — works today
+                </p>
+                <ol className="steps">
+                  <li>
+                    Open <code>chrome://extensions</code> in the Chrome profile
+                    you want brw to drive.
+                  </li>
+                  <li>
+                    Turn on <strong>Developer mode</strong> (top-right toggle).
+                  </li>
+                  <li>
+                    Click <strong>Load unpacked</strong> and choose the{" "}
+                    <code>extension/</code> folder from the brw repo — or run{" "}
+                    <code>make install-extension</code> to open the right page
+                    and reveal the folder.
+                  </li>
+                  <li>
+                    Keep it enabled, run <code>brwd --bridge</code>, and brw is
+                    on your real browser.
+                  </li>
+                </ol>
+              </div>
+              <div className="install-route">
+                <p className="install-route-head">
+                  <span className="install-badge install-badge-soon">
+                    one-click
+                  </span>
+                  Chrome Web Store
+                </p>
+                {chromeStoreUrl ? (
+                  <>
+                    <p>
+                      One click, auto-updates, the same permanent ID. Because brw
+                      uses the debugger permission, Chrome shows a broad
+                      permission prompt — that is expected for real browser
+                      control.
+                    </p>
+                    <Link
+                      href={chromeStoreUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="button button-primary"
+                    >
+                      Add to Chrome
+                    </Link>
+                  </>
+                ) : (
+                  <p>
+                    An unlisted Web Store build is on the way for one-click
+                    install and auto-updates. Until it lands, use the manual
+                    route — it installs the exact same extension and the same
+                    permanent ID.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </section>
