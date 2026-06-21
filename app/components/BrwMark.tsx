@@ -96,16 +96,21 @@ export function BrwMark({
     </g>
   );
 
-  // ref tag geometry (top-left, "e17")
+  // ref tag geometry — annotation-style label tab floating just above the
+  // top-left corner of the selection frame: left edge flush with the frame's
+  // outer edge, bottom edge resting a hair above the top border. Keeps the
+  // corner bracket fully readable instead of swallowing it.
   const tagW = pitch * 3.3;
-  const tagH = pitch * 1.7;
-  const tagX = inset;
-  const tagY = -tagH / 2 + inset + pitch * 0.2;
+  const tagH = pitch * 1.55;
+  const tagGap = pitch * 0.16;
+  const tagX = 0;
+  const tagY = -(tagH + tagGap);
+  const topExtra = tagH + tagGap; // extend the viewBox upward to reveal the tab
 
   return (
     <svg
       className={["peen", className].filter(Boolean).join(" ")}
-      viewBox={`0 0 ${width} ${height}`}
+      viewBox={`0 ${(-topExtra).toFixed(2)} ${width} ${+(height + topExtra).toFixed(2)}`}
       preserveAspectRatio="xMidYMid meet"
       role="img"
       aria-label={title}

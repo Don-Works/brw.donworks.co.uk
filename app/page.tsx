@@ -3,10 +3,14 @@ import { BrwMark } from "./components/BrwMark";
 import {
   Boxes,
   Eye,
+  Gauge,
   Github,
+  Globe,
+  KeyRound,
   Layers,
   MousePointerClick,
   Network,
+  Plug,
   ScanSearch,
   ServerCog,
   Terminal,
@@ -66,6 +70,33 @@ const features: PanelItem[] = [
   },
 ];
 
+const why: PanelItem[] = [
+  {
+    label: "faster",
+    title: "Fewer turns, fewer tokens",
+    body: "In internal pre-release head-to-heads against Claude-in-Chrome on semantic web tasks, brw used fewer turns, less token spend, less wall-clock time and lower estimated cost — because agents act from stable refs and a post-action observation, not by re-interpreting a screenshot every turn. Directional for now; a reproducible public harness is on the way.",
+    icon: Gauge,
+  },
+  {
+    label: "agnostic",
+    title: "Any agent harness",
+    body: "Not locked to one vendor's browser. Claude Code, Codex, Cursor, Grok, Gemini or your own client — anything that speaks MCP or HTTP drives the same real brw.",
+    icon: Plug,
+  },
+  {
+    label: "your auth",
+    title: "Your real Chrome logins",
+    body: "Bridge to your installed, already-signed-in Chrome profile: the sites you're logged into, brw is logged into. Cookies, passkeys, sessions and downloads stay on your machine.",
+    icon: KeyRound,
+  },
+  {
+    label: "whole web",
+    title: "The whole web, not a sandbox",
+    body: "A real, visible browser running your profile reaches any page you can — gated dashboards, signed-in apps, content a locked-down agent browser simply can't. A real browser, not stealth or bypass.",
+    icon: Globe,
+  },
+];
+
 const facts = [
   ["control", "MCP + HTTP"],
   ["from", "Revitt"],
@@ -108,6 +139,7 @@ export default function HomePage() {
           <span className="brand-wordmark">brw</span>
         </Link>
         <nav className="main-nav" aria-label="Main navigation">
+          <a href="#why">Why</a>
           <a href="#what">What</a>
           <a href="#features">Features</a>
           <a href="#quickstart">Quick start</a>
@@ -162,6 +194,32 @@ export default function HomePage() {
                 </div>
               ))}
             </dl>
+          </div>
+        </section>
+
+        <section id="why" className="section">
+          <div className="section-inner">
+            <div className="section-header">
+              <p className="section-kicker">why brw</p>
+              <h2>Built to win on real web work</h2>
+              <p>
+                Screenshot-driving agent browsers burn turns and tokens
+                re-reading pixels, run one vendor&apos;s stack, and get walled
+                off from signed-in pages. brw takes the other path.
+              </p>
+            </div>
+            <div className="panel-grid">
+              {why.map(({ icon: Icon, ...item }) => (
+                <article key={item.title} className="info-panel">
+                  <div className="panel-topline">
+                    <span>{item.label}</span>
+                    <Icon aria-hidden="true" />
+                  </div>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
