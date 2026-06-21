@@ -15,6 +15,16 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
+      {
+        // self-hosted extension package — served for ExtensionInstallForcelist
+        source: "/brw.crx",
+        headers: [{ key: "Content-Type", value: "application/x-chrome-extension" }],
+      },
+      {
+        // Omaha/gupdate auto-update manifest polled by Chromium
+        source: "/updates.xml",
+        headers: [{ key: "Content-Type", value: "application/xml" }],
+      },
     ];
   },
 };
