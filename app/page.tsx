@@ -22,12 +22,15 @@ type PanelItem = {
   title: string;
   body: string;
   icon: LucideIcon;
+  cta?: { label: string; href: string };
 };
 
 const brwUrl = "https://github.com/Don-Works/brw";
 const donworksSite = "https://donworks.co.uk";
 const donworksGithub = "https://github.com/Don-Works";
 const mcplexerUrl = "https://mcplexer.com";
+const mcplexerWorkspacesUrl =
+  "https://mcplexer.com/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source&utm_content=why_chrome_logins#workspaces";
 const revittUrl =
   "https://revitt.co/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source";
 
@@ -74,25 +77,29 @@ const why: PanelItem[] = [
   {
     label: "faster",
     title: "Fewer turns, fewer tokens",
-    body: "In internal pre-release head-to-heads against Claude-in-Chrome on semantic web tasks, brw used fewer turns, less token spend, less wall-clock time and lower estimated cost — because agents act from stable refs and a post-action observation, not by re-interpreting a screenshot every turn. Directional for now; a reproducible public harness is on the way.",
+    body: "Pre-release head-to-heads vs Claude-in-Chrome: same tasks, fewer turns and fewer tokens. Agents act from stable refs, not a fresh screenshot each turn. Public benchmark on the way.",
     icon: Gauge,
   },
   {
     label: "agnostic",
     title: "Any agent harness",
-    body: "Not locked to one vendor's browser. Claude Code, Codex, Cursor, Grok, Gemini or your own client — anything that speaks MCP or HTTP drives the same real brw.",
+    body: "Not tied to one vendor's browser. Claude Code, Codex, Cursor, opencode, pi, Gemini or your own client — anything that speaks MCP or HTTP drives the same brw.",
     icon: Plug,
   },
   {
     label: "your auth",
     title: "Your real Chrome logins",
-    body: "Bridge to your installed, already-signed-in Chrome profile: the sites you're logged into, brw is logged into. Cookies, passkeys, sessions and downloads stay on your machine.",
+    body: "Bridges to your installed, signed-in Chrome. The sites you're logged into, brw is too — cookies and sessions stay on your machine.",
     icon: KeyRound,
+    cta: {
+      label: "Bind profiles to workspaces with MCPlexer →",
+      href: mcplexerWorkspacesUrl,
+    },
   },
   {
     label: "whole web",
     title: "The whole web, not a sandbox",
-    body: "A real, visible browser running your profile reaches any page you can — gated dashboards, signed-in apps, content a locked-down agent browser simply can't. A real browser, not stealth or bypass.",
+    body: "A real browser on your profile reaches any page you can — gated dashboards, signed-in apps, content a locked-down agent browser can't.",
     icon: Globe,
   },
 ];
@@ -203,12 +210,12 @@ export default function HomePage() {
               <p className="section-kicker">why brw</p>
               <h2>Built to win on real web work</h2>
               <p>
-                Screenshot-driving agent browsers burn turns and tokens
-                re-reading pixels, run one vendor&apos;s stack, and get walled
-                off from signed-in pages. brw takes the other path.
+                Other agent browsers burn tokens re-reading pixels, lock you to
+                one vendor, and stall at the login wall. brw takes the other
+                path.
               </p>
             </div>
-            <div className="panel-grid">
+            <div className="panel-grid panel-grid-4">
               {why.map(({ icon: Icon, ...item }) => (
                 <article key={item.title} className="info-panel">
                   <div className="panel-topline">
@@ -217,6 +224,16 @@ export default function HomePage() {
                   </div>
                   <h3>{item.title}</h3>
                   <p>{item.body}</p>
+                  {item.cta && (
+                    <a
+                      className="panel-cta"
+                      href={item.cta.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {item.cta.label}
+                    </a>
+                  )}
                 </article>
               ))}
             </div>

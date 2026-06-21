@@ -526,6 +526,43 @@ a {
   margin-top: 2rem;
 }
 
+/* why-section grid — 4 cards lay out 1 → 2×2 → 4-up, never an orphaned 3 + 1.
+   Higher specificity (.panel-grid.panel-grid-4) so it beats the shared
+   .panel-grid breakpoints regardless of source order. */
+.panel-grid.panel-grid-4 {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 540px) {
+  .panel-grid.panel-grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .panel-grid.panel-grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.panel-grid-4 .info-panel {
+  min-height: 12rem;
+}
+
+/* upsell link pinned to the bottom of a card */
+.panel-cta {
+  margin-top: auto;
+  padding-top: 0.95rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-magenta);
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.panel-cta:hover {
+  color: var(--color-magenta-soft);
+  text-decoration: underline;
+}
+
 .info-panel,
 .wide-panel {
   border: 1px solid var(--color-border);
