@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+; brw extension force-install + auto-update for Chromium on Windows.
+; Import with: reg import brw-chromium-policy.reg  (or double-click).
+; For Google Chrome, replace "Chromium" with "Google\Chrome" in the key path.
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist]
+"1"="amocjcgddnoakjijfggdpnefdnboilpe;https://brw.donworks.co.uk/updates.xml"

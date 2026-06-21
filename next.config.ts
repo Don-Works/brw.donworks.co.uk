@@ -25,6 +25,11 @@ const nextConfig: NextConfig = {
         source: "/updates.xml",
         headers: [{ key: "Content-Type", value: "application/xml" }],
       },
+      {
+        // macOS configuration profile — content-type triggers the installer
+        source: "/policies/brw-chromium.mobileconfig",
+        headers: [{ key: "Content-Type", value: "application/x-apple-aspen-config" }],
+      },
     ];
   },
 };

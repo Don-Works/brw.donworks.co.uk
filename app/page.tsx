@@ -385,16 +385,30 @@ export default function HomePage() {
           <div className="section-inner split-layout">
             <div className="section-header section-header-sticky">
               <p className="section-kicker">install</p>
-              <h2>Add the Chrome extension</h2>
+              <h2>Recommended on Chromium</h2>
               <p>
                 The brw extension bridges the daemon to your real, signed-in
-                Chrome over <code>ws://127.0.0.1</code>. It drives visible tabs
+                browser over <code>ws://127.0.0.1</code>. It drives visible tabs
                 through the debugger protocol and{" "}
                 <strong>never reads cookies, passwords or passkeys</strong>.
               </p>
               <p>
-                It ships with one permanent extension ID, so the daemon trusts
-                it with zero config:
+                brw is open source — and so is{" "}
+                <a
+                  href="https://www.chromium.org/Home"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Chromium
+                </a>
+                , so it&apos;s what we champion. On Chromium you force-install
+                the extension and get auto-updates from a single policy file
+                pointed at brw&apos;s own update server — no Chrome Web Store,
+                no review queue, no gatekeeping. It works on Chrome too.
+              </p>
+              <p>
+                One permanent extension ID, trusted by the daemon with zero
+                config:
               </p>
               <p className="install-id">
                 <code>{extensionId}</code>
@@ -403,59 +417,91 @@ export default function HomePage() {
             <div className="stacked-panels">
               <div className="install-route">
                 <p className="install-route-head">
-                  <span className="install-badge">manual</span>
-                  Load unpacked — works today
+                  <span className="install-badge">recommended</span>
+                  Chromium — force-install + auto-update
                 </p>
-                <ol className="steps">
+                <p>
+                  Point Chromium at brw&apos;s self-hosted{" "}
+                  <a href="/updates.xml" target="_blank" rel="noopener noreferrer">
+                    update manifest
+                  </a>
+                  . It installs the signed{" "}
+                  <a href="/brw.crx" target="_blank" rel="noopener noreferrer">
+                    package
+                  </a>{" "}
+                  and keeps it current automatically. Drop one policy file for
+                  your platform:
+                </p>
+                <ul className="steps">
                   <li>
-                    Open <code>chrome://extensions</code> in the Chrome profile
-                    you want brw to drive.
+                    <strong>Linux:</strong> save{" "}
+                    <a href="/policies/brw-chromium-policy.json" target="_blank" rel="noopener noreferrer">
+                      the policy JSON
+                    </a>{" "}
+                    to <code>/etc/chromium/policies/managed/</code> — no MDM
+                    needed.
                   </li>
                   <li>
-                    Turn on <strong>Developer mode</strong> (top-right toggle).
+                    <strong>macOS:</strong> install the{" "}
+                    <a href="/policies/brw-chromium.mobileconfig" target="_blank" rel="noopener noreferrer">
+                      configuration profile
+                    </a>{" "}
+                    (or push it via MDM).
                   </li>
                   <li>
-                    Click <strong>Load unpacked</strong> and choose the{" "}
-                    <code>extension/</code> folder from the brw repo — or run{" "}
-                    <code>make install-extension</code> to open the right page
-                    and reveal the folder.
+                    <strong>Windows:</strong> import{" "}
+                    <a href="/policies/brw-chromium-policy.reg" target="_blank" rel="noopener noreferrer">
+                      the .reg file
+                    </a>{" "}
+                    (or set the matching GPO).
                   </li>
-                  <li>
-                    Keep it enabled, run <code>brwd --bridge</code>, and brw is
-                    on your real browser.
-                  </li>
-                </ol>
+                </ul>
+                <p>
+                  No policy at all? On Chromium, <code>brwd</code> can launch the
+                  browser with the extension already loaded —{" "}
+                  <code>--load-extension</code> still works on Chromium (Chrome
+                  137+ dropped it), so there is nothing to click.
+                </p>
               </div>
               <div className="install-route">
                 <p className="install-route-head">
                   <span className="install-badge install-badge-soon">
-                    one-click
+                    also works
                   </span>
-                  Chrome Web Store
+                  Chrome — load unpacked
                 </p>
+                <ol className="steps">
+                  <li>
+                    Run <code>make install-extension</code> (or open{" "}
+                    <code>chrome://extensions</code>).
+                  </li>
+                  <li>
+                    Turn on <strong>Developer mode</strong>, click{" "}
+                    <strong>Load unpacked</strong>, choose the{" "}
+                    <code>extension/</code> folder.
+                  </li>
+                  <li>
+                    Run <code>brwd --bridge</code> and brw is on your real
+                    browser.
+                  </li>
+                </ol>
                 {chromeStoreUrl ? (
-                  <>
-                    <p>
-                      One click, auto-updates, the same permanent ID. Because brw
-                      uses the debugger permission, Chrome shows a broad
-                      permission prompt — that is expected for real browser
-                      control.
-                    </p>
+                  <p>
+                    Or one-click from the{" "}
                     <Link
                       href={chromeStoreUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="button button-primary"
                     >
-                      Add to Chrome
+                      Chrome Web Store
                     </Link>
-                  </>
+                    .
+                  </p>
                 ) : (
                   <p>
-                    An unlisted Web Store build is on the way for one-click
-                    install and auto-updates. Until it lands, use the manual
-                    route — it installs the exact same extension and the same
-                    permanent ID.
+                    A one-click Chrome Web Store build is in review; until it
+                    lands, load-unpacked installs the exact same extension and
+                    ID.
                   </p>
                 )}
               </div>

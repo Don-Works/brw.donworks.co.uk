@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>PayloadType</key>
+  <string>Configuration</string>
+  <key>PayloadVersion</key>
+  <integer>1</integer>
+  <key>PayloadIdentifier</key>
+  <string>org.donworks.brw.chrome-extension</string>
+  <key>PayloadUUID</key>
+  <string>583A4F36-47A5-ACF9-C101-F9A2266E6B45</string>
+  <key>PayloadDisplayName</key>
+  <string>brw</string>
+  <key>PayloadDescription</key>
+  <string>Installs brw for approved Chrome profiles.</string>
+  <key>PayloadContent</key>
+  <array>
+    <dict>
+      <key>PayloadType</key>
+      <string>com.google.Chrome</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>
+      <key>PayloadIdentifier</key>
+      <string>org.donworks.brw.chrome-extension.settings</string>
+      <key>PayloadUUID</key>
+      <string>7B7537C0-5A9C-9E85-37BB-4F14A1195A43</string>
+      <key>PayloadDisplayName</key>
+      <string>Google Chrome ExtensionSettings</string>
+      <key>ExtensionSettings</key>
+      <dict>
+        <key>amocjcgddnoakjijfggdpnefdnboilpe</key>
+        <dict>
+          <key>installation_mode</key>
+          <string>force_installed</string>
+          <key>update_url</key>
+          <string>https://brw.donworks.co.uk/updates.xml</string>
+        </dict>
+      </dict>
+    </dict>
+  </array>
+</dict>
+</plist>
