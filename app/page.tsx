@@ -30,9 +30,11 @@ const extensionId = "amocjcgddnoakjijfggdpnefdnboilpe";
 // Unlisted Chrome Web Store install URL. Set this once the item is published;
 // until then the Install section shows the manual (load-unpacked) route only.
 const chromeStoreUrl = "";
-const donworksSite = "https://donworks.co.uk";
+const donworksSite =
+  "https://donworks.co.uk/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source";
 const donworksGithub = "https://github.com/Don-Works";
-const mcplexerUrl = "https://mcplexer.com";
+const mcplexerUrl =
+  "https://mcplexer.com/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source";
 const mcplexerWorkspacesUrl =
   "https://mcplexer.com/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source&utm_content=why_chrome_logins#workspaces";
 const revittUrl =
