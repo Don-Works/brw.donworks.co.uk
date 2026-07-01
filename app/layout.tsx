@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { getLatestRelease } from "@/lib/latestRelease";
 import "./globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -58,9 +59,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const { version } = await getLatestRelease();
   const softwareJsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -69,7 +71,7 @@ export default function RootLayout({
     url: siteUrl,
     applicationCategory: "DeveloperApplication",
     operatingSystem: "macOS, Linux, Windows",
-    softwareVersion: "0.0.1",
+    softwareVersion: version.replace(/^v/, "") || undefined,
     license: "https://www.gnu.org/licenses/agpl-3.0.html",
     codeRepository: brwGithubUrl,
     offers: {

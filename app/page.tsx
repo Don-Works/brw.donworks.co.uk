@@ -16,6 +16,7 @@ import {
   Terminal,
   type LucideIcon,
 } from "lucide-react";
+import { getLatestRelease } from "@/lib/latestRelease";
 
 type PanelItem = {
   label: string;
@@ -26,6 +27,8 @@ type PanelItem = {
 };
 
 const brwUrl = "https://github.com/Don-Works/brw";
+const brwReleasesUrl = "https://github.com/Don-Works/brw/releases";
+const brwInstallDocsUrl = "https://github.com/Don-Works/brw/blob/main/docs/install.md";
 const extensionId = "amocjcgddnoakjijfggdpnefdnboilpe";
 // Unlisted Chrome Web Store install URL. Set this once the item is published;
 // until then the Install section shows the manual (load-unpacked) route only.
@@ -141,7 +144,9 @@ const footerGroups = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { version, htmlUrl } = await getLatestRelease();
+  const downloadUrl = htmlUrl || brwReleasesUrl;
   return (
     <>
       <header className="site-header">
@@ -187,19 +192,28 @@ export default function HomePage() {
             </p>
             <div className="hero-actions">
               <Link
-                href={brwUrl}
+                href={downloadUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="button button-primary"
               >
                 <Github aria-hidden="true" />
-                Get brw on GitHub
+                Download installer
               </Link>
               <a href="#quickstart" className="button button-secondary">
                 <Terminal aria-hidden="true" />
                 Quick start
               </a>
             </div>
+            {version ? (
+              <p className="hero-version">
+                Latest release{" "}
+                <a href={downloadUrl} target="_blank" rel="noopener noreferrer">
+                  <code>{version}</code>
+                </a>{" "}
+                · macOS · Linux · Windows
+              </p>
+            ) : null}
             <dl className="facts-grid">
               {facts.map(([term, detail]) => (
                 <div key={term}>
@@ -332,37 +346,62 @@ export default function HomePage() {
           <div className="section-inner split-layout">
             <div className="section-header section-header-sticky">
               <p className="section-kicker">quick start</p>
-              <h2>Clone, build, run as MCP</h2>
+              <h2>Install, then run as MCP</h2>
               <p>
-                brw is a single daemon, <code>brwd</code>. Build it, then run it
-                as an MCP server over stdio or expose the HTTP API on loopback.
+                Native installers put <code>brwd</code>, <code>brwctl</code>,
+                <code>brwcheck</code>, and <code>brw-devtools-mcp</code> on your
+                PATH. Pick the release asset for your platform, then run the
+                daemon as stdio MCP or expose the HTTP API on loopback.
               </p>
               <p>
-                For remote and installed-Chrome setups, see the docs on the{" "}
-                <Link href={brwUrl} target="_blank" rel="noopener noreferrer">
-                  brw repository
+                For remote and installed-Chrome setups, see the{" "}
+                <Link href={brwInstallDocsUrl} target="_blank" rel="noopener noreferrer">
+                  install docs
                 </Link>
                 .
               </p>
             </div>
             <div className="stacked-panels">
+              <div className="install-route">
+                <p className="install-route-head">
+                  <span className="install-badge">recommended</span>
+                  Native installers from GitHub releases
+                </p>
+                <ul className="steps">
+                  <li>
+                    <strong>Windows:</strong> <code>.msi</code> for amd64 or
+                    arm64.
+                  </li>
+                  <li>
+                    <strong>macOS:</strong> universal <code>.pkg</code>.
+                  </li>
+                  <li>
+                    <strong>Linux:</strong> <code>.deb</code> or{" "}
+                    <code>.rpm</code> for amd64 or arm64.
+                  </li>
+                </ul>
+                <Link
+                  href={brwReleasesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="button button-secondary"
+                >
+                  <Github aria-hidden="true" />
+                  Open releases
+                </Link>
+              </div>
               <pre className="codeblock">
                 <code>
-                  <span className="cmt"># clone and build</span>
+                  <span className="cmt"># after installing from a release</span>
                   {"\n"}
-                  <span className="prompt">$ </span>git clone https://github.com/Don-Works/brw.git
+                  <span className="cmt"># run as an MCP server over stdio</span>
                   {"\n"}
-                  <span className="prompt">$ </span>cd brw{"\n"}
-                  <span className="prompt">$ </span>make build{"\n"}
-                  {"\n"}
-                  <span className="cmt"># run as an MCP server (stdio)</span>
-                  {"\n"}
-                  <span className="prompt">$ </span>./bin/brwd --mcp --http off
+                  <span className="prompt">$ </span>brwd --mcp --http off
                   {"\n"}
                   {"\n"}
                   <span className="cmt"># or expose the HTTP API on loopback</span>
                   {"\n"}
-                  <span className="prompt">$ </span>./bin/brwd --http 127.0.0.1:17310
+                  <span className="prompt">$ </span>brwd --http 127.0.0.1:17310
                 </code>
               </pre>
               <pre className="codeblock">
@@ -379,6 +418,17 @@ export default function HomePage() {
                   <span className="prompt">$ </span>curl -s 127.0.0.1:17310/api/page/snapshot | jq
                 </code>
               </pre>
+              <pre className="codeblock">
+                <code>
+                  <span className="cmt"># source build if you need it</span>
+                  {"\n"}
+                  <span className="prompt">$ </span>git clone https://github.com/Don-Works/brw.git
+                  {"\n"}
+                  <span className="prompt">$ </span>cd brw{"\n"}
+                  <span className="prompt">$ </span>make build{"\n"}
+                  <span className="prompt">$ </span>./bin/brwd --mcp --http off
+                </code>
+              </pre>
             </div>
           </div>
         </section>
@@ -387,12 +437,12 @@ export default function HomePage() {
           <div className="section-inner split-layout">
             <div className="section-header section-header-sticky">
               <p className="section-kicker">install</p>
-              <h2>Recommended on Chromium</h2>
+              <h2>Daemon first, Chromium bridge when you need real profile auth</h2>
               <p>
-                The brw extension bridges the daemon to your real, signed-in
-                browser over <code>ws://127.0.0.1</code>. It drives visible tabs
-                through the debugger protocol and{" "}
-                <strong>never reads cookies, passwords or passkeys</strong>.
+                Start with a native brw installer from GitHub releases. The
+                extension is only needed when you want the daemon to bridge into
+                an already-signed-in Chrome or Chromium profile over{" "}
+                <code>ws://127.0.0.1</code>.
               </p>
               <p>
                 brw is open source — and so is{" "}
@@ -417,6 +467,28 @@ export default function HomePage() {
               </p>
             </div>
             <div className="stacked-panels">
+              <div className="install-route">
+                <p className="install-route-head">
+                  <span className="install-badge">daemon</span>
+                  Native package installers
+                </p>
+                <p>
+                  GitHub releases ship <code>.msi</code> for Windows, a
+                  universal macOS <code>.pkg</code>, and Linux <code>.deb</code>
+                  / <code>.rpm</code> packages. They put the brw commands on
+                  PATH and install the extension, tests, README, and licence
+                  into the platform share directory.
+                </p>
+                <Link
+                  href={brwReleasesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="button button-secondary"
+                >
+                  <Github aria-hidden="true" />
+                  Download from releases
+                </Link>
+              </div>
               <div className="install-route">
                 <p className="install-route-head">
                   <span className="install-badge">recommended</span>
