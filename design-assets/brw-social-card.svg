@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">brw — complete Chrome control for agents</title>
-  <desc id="desc">A dark technical grid with the brw mark and the message Control Chrome completely. Quickly. With recipes.</desc>
+  <title id="title">brw — complete Chrome and Chromium control for agents</title>
+  <desc id="desc">A dark technical grid with the brw mark and the message Control Chrome and Chromium completely. Quickly. With recipes.</desc>
   <defs>
     <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#170412"/>
@@ -31,8 +31,8 @@
   <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
     <text x="92" y="96" fill="#ff8fe0" font-size="20" font-weight="700" letter-spacing="7">— OPEN SOURCE BY REVITT</text>
     <text x="82" y="272" fill="#ff2ec4" font-size="174" font-weight="900" letter-spacing="-14">brw</text>
-    <text x="92" y="368" fill="#edf2e6" font-size="43" font-weight="800" letter-spacing="-1">CONTROL CHROME COMPLETELY.</text>
-    <text x="92" y="424" fill="#edf2e6" font-size="43" font-weight="800" letter-spacing="-1">QUICKLY. WITH RECIPES.</text>
+    <text x="92" y="368" fill="#edf2e6" font-size="36" font-weight="800" letter-spacing="-1">CONTROL CHROME + CHROMIUM.</text>
+    <text x="92" y="424" fill="#edf2e6" font-size="36" font-weight="800" letter-spacing="-1">COMPLETELY. QUICKLY. WITH RECIPES.</text>
 
     <g font-size="18" font-weight="700">
       <rect x="92" y="502" width="154" height="54" fill="#140f13" stroke="#49313f"/>

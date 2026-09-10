@@ -159,8 +159,8 @@ const why: PanelItem[] = [
   },
   {
     label: "your auth",
-    title: "Your real Chrome logins",
-    body: "Bridges to your installed, signed-in Chrome. The sites you're logged into, brw is too — cookies and sessions stay on your machine.",
+    title: "Your real browser logins",
+    body: "Bridges to your installed, signed-in Chrome or Chromium. The sites you're logged into, brw is too — cookies and sessions stay on your machine.",
     icon: KeyRound,
     cta: {
       label: "Bind profiles to workspaces with MCPlexer →",
@@ -313,13 +313,13 @@ export default async function HomePage() {
               <BrwMark title="brw" />
             </div>
             <h1 className="hero-tagline">
-              Control Chrome completely. Quickly. With recipes.
+              Control Chrome and Chromium completely. Quickly. With recipes.
             </h1>
             <p className="hero-lede">
-              brw gives any agent fast, inspectable control of real Chrome.
-              Stable refs replace pixel hunting, every action reports what
-              changed, and deterministic recipes turn proven browser work into
-              a two-call run.
+              brw gives any agent fast, inspectable control of real Chrome and
+              Chromium. Stable refs replace pixel hunting, every action reports
+              what changed, and deterministic recipes turn proven browser work
+              into a two-call run.
             </p>
             <div className="hero-actions">
               <Link
@@ -633,7 +633,7 @@ export default async function HomePage() {
           <div className="section-inner split-layout">
             <div className="section-header section-header-sticky">
               <p className="section-kicker">quick start</p>
-              <h2>Install. Start brw. Give your agent Chrome.</h2>
+              <h2>Install. Start brw. Give your agent Chrome or Chromium.</h2>
               <p>
                 Native installers put <code>brwd</code>, <code>brwctl</code>,
                 <code>brwcheck</code>, and <code>brw-devtools-mcp</code> on your
@@ -919,8 +919,9 @@ export default async function HomePage() {
             <div>
               <span>brw</span>
               <p>
-                Complete Chrome control for agents — fast by default, repeatable
-                by recipe. An open-source tool from Revitt&apos;s Don Works bench.
+                Complete Chrome and Chromium control for agents — fast by
+                default, repeatable by recipe. An open-source tool from
+                Revitt&apos;s Don Works bench.
               </p>
             </div>
           </div>

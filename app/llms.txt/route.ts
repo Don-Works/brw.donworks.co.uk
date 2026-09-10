@@ -3,7 +3,7 @@ export function GET() {
     [
       "# brw",
       "",
-      "brw — complete Chrome control for agents, fast by default and repeatable by recipe.",
+      "brw — complete Chrome and Chromium control for agents, fast by default and repeatable by recipe.",
       "",
       "- Site: https://brw.donworks.co.uk",
       "- Source: https://github.com/Don-Works/brw",

@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "brw — Complete Chrome control for agents",
+    name: "brw — Complete Chrome and Chromium control for agents",
     short_name: "brw",
     description:
-      "Control real Chrome quickly with stable refs, batched actions and deterministic recipes over MCP or HTTP. Open source by Revitt, AGPL-3.0.",
+      "Control real Chrome and Chromium quickly with stable refs, batched actions and deterministic recipes over MCP or HTTP. Open source by Revitt, AGPL-3.0.",
     start_url: "/",
     display: "standalone",
     background_color: "#050604",

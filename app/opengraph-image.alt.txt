@@ -1,1 +1,1 @@
-brw — Control Chrome completely. Quickly. With recipes.
+brw — Control Chrome and Chromium completely. Quickly. With recipes.
