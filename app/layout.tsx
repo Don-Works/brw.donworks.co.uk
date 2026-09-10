@@ -12,9 +12,9 @@ const jetbrainsMono = JetBrains_Mono({
 
 const siteUrl = "https://brw.donworks.co.uk";
 const brwGithubUrl = "https://github.com/Don-Works/brw";
-const title = "brw — Semantic browser control for agents";
+const title = "brw — Complete Chrome control for agents";
 const description =
-  "brw runs a real, visible Chrome and exposes it over MCP and HTTP. Agents act from stable refs like e17 instead of CSS selectors or screenshots, with a post-action observation after every step. Open source by Revitt, AGPL-3.0.";
+  "Control real Chrome quickly with stable refs, batched actions and deterministic recipes. Open-source browser automation over MCP and HTTP.";
 
 export const viewport: Viewport = {
   width: "device-width",

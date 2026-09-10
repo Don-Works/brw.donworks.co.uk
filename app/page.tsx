@@ -1,19 +1,21 @@
 import Link from "next/link";
 import { BrwMark } from "./components/BrwMark";
 import {
-  Boxes,
+  Bot,
+  Check,
   Eye,
+  FileText,
+  Fingerprint,
   Gauge,
   Github,
-  Globe,
   KeyRound,
   Layers,
   MousePointerClick,
-  Network,
-  Plug,
+  Repeat,
   ScanSearch,
-  ServerCog,
-  Terminal,
+  ShieldCheck,
+  Sparkles,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 import { getLatestRelease } from "@/lib/latestRelease";
@@ -26,9 +28,22 @@ type PanelItem = {
   cta?: { label: string; href: string };
 };
 
+type CapabilityGroup = {
+  label: string;
+  title: string;
+  body: string;
+  items: string[];
+  icon: LucideIcon;
+};
+
 const brwUrl = "https://github.com/Don-Works/brw";
 const brwReleasesUrl = "https://github.com/Don-Works/brw/releases";
 const brwInstallDocsUrl = "https://github.com/Don-Works/brw/blob/main/docs/install.md";
+const brwBenchmarksUrl = "https://github.com/Don-Works/brw/blob/main/docs/benchmarks.md";
+const brwRecipeDocsUrl =
+  "https://github.com/Don-Works/brw/blob/main/docs/recipes-and-artifacts.md";
+const claudeChromeGuideUrl =
+  "https://support.claude.com/en/articles/12012173-get-started-with-claude-in-chrome";
 const extensionId = "amocjcgddnoakjijfggdpnefdnboilpe";
 // Unlisted Chrome Web Store install URL. Set this once the item is published;
 // until then the Install section shows the manual (load-unpacked) route only.
@@ -47,57 +62,100 @@ const residentUrl =
 const handlerUrl =
   "https://github.com/Don-Works/handler?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source";
 
-const features: PanelItem[] = [
+const capabilityGroups: CapabilityGroup[] = [
   {
-    label: "01",
-    title: "Cross-harness",
-    body: "stdio MCP for agent harnesses and an HTTP JSON API for custom clients. The same real browser, reachable from wherever your agent runs.",
-    icon: Boxes,
-  },
-  {
-    label: "02",
-    title: "SSH-first remote runtime",
-    body: "Remote control is a first-class path. The visible browser stays on the machine that owns the profile; SSH carries stdio MCP, so cookies, passkeys and downloads never leave home.",
-    icon: ServerCog,
-  },
-  {
-    label: "03",
-    title: "Installed-profile bridge",
-    body: "A Chrome extension bridges to an already-authenticated installed Chrome profile — the auth you already have, without copying cookies or fighting Chrome's remote-debug lockdown.",
-    icon: Layers,
-  },
-  {
-    label: "04",
-    title: "Semantic snapshot, read, find",
-    body: "Snapshots combine DOM and accessibility data. Read prose, links, headings, forms, tables and structured product data. Find elements and act on them by stable ref.",
+    label: "see + act",
+    title: "Semantic page control",
+    body: "The fast everyday surface, built around stable refs and small observations.",
     icon: ScanSearch,
+    items: [
+      "Snapshot and find interactive controls by role, name, text or test id",
+      "Read prose, headings, links, forms, tables, Open Graph and JSON-LD",
+      "Click, type, fill, select, press, scroll, hover, drag and upload",
+      "Wait and assert visibility, text, values and navigation outcomes",
+      "Discover and call WebMCP tools exposed directly by compatible web apps",
+    ],
   },
   {
-    label: "05",
-    title: "Tabs, downloads, network",
-    body: "Tabs and tab groups, downloads, console, network capture and request replay, plus cancellation. Organise visible Chrome work into named runs the human can watch.",
-    icon: Network,
+    label: "compose",
+    title: "Fast multi-step execution",
+    body: "Collapse browser work into fewer calls while preserving explicit checks.",
+    icon: Zap,
+    items: [
+      "Batch and plan many steps against one pinned tab",
+      "Pre-arm waits so fast page events are not missed",
+      "Cancel in-flight work and observe cheap page deltas",
+      "Trace a successful flow back into a replayable batch",
+    ],
   },
   {
-    label: "06",
-    title: "Set-of-Marks overlays",
-    body: "Screenshots are a visual fallback, not the main channel — with optional Set-of-Marks overlays that label elements with the same refs the agent acts on.",
+    label: "repeat",
+    title: "Deterministic recipes",
+    body: "Move proven workflows out of prompts and into a private, reviewable runtime.",
+    icon: Repeat,
+    items: [
+      "Semantic search over disclosure-safe recipe metadata",
+      "Immutable version and SHA-256 digest pinning",
+      "Exact-origin gates, declared inputs, risk and idempotency",
+      "Timers plus page, element, download, tab and network events",
+    ],
+  },
+  {
+    label: "browser",
+    title: "Profiles, tabs and isolation",
+    body: "The real browser stays visible, organised and under the operator's control.",
+    icon: Layers,
+    items: [
+      "Installed-profile bridge for existing logins and passkeys",
+      "One namespace per profile, plus tab leases and named tab groups",
+      "Background opens and pinned targets without stealing OS focus",
+      "Fresh incognito contexts on direct-CDP profiles",
+    ],
+  },
+  {
+    label: "inspect",
+    title: "Debugging and evidence",
+    body: "See what the page, browser and server actually did.",
     icon: Eye,
+    items: [
+      "Console messages, network resources and active request capture",
+      "Authenticated in-page request replay with mutation guards",
+      "Screenshots, element crops and Set-of-Marks overlays",
+      "Downloads, responsive device emulation and real window bounds",
+    ],
+  },
+  {
+    label: "retain",
+    title: "Browser-host artifacts",
+    body: "Large or sensitive evidence stays beside the browser until explicitly read.",
+    icon: ShieldCheck,
+    items: [
+      "Text, semantic JSON, screenshots, PDFs, downloads and short video",
+      "Opaque handles with bounded search, read, info and delete",
+      "TTL, per-item and total quotas, hashing and owner-only storage",
+      "Direct-CDP cookie controls for dedicated profiles; extension cookies stay blocked",
+    ],
   },
 ];
 
 const why: PanelItem[] = [
   {
-    label: "faster",
-    title: "Fewer turns, fewer tokens",
-    body: "Pre-release head-to-heads vs Claude-in-Chrome: same tasks, fewer turns and fewer tokens. Agents act from stable refs, not a fresh screenshot each turn. Public benchmark on the way.",
+    label: "control",
+    title: "The whole browser surface",
+    body: "More than clicks: tabs, groups, forms, files, console, network, responsive testing, downloads, artifacts and human hand-off — exposed as MCP and HTTP.",
+    icon: Bot,
+  },
+  {
+    label: "quickly",
+    title: "Fewer calls, smaller payloads",
+    body: "Stable refs, action observations, batched plans, bounded reads and on-demand tool disclosure remove repeat screenshots and unnecessary round-trips.",
     icon: Gauge,
   },
   {
-    label: "agnostic",
-    title: "Any agent harness",
-    body: "Not tied to one vendor's browser. Claude Code, Codex, Cursor, opencode, pi, Gemini or your own client — anything that speaks MCP or HTTP drives the same brw.",
-    icon: Plug,
+    label: "recipes",
+    title: "Teach it once. Run it exactly.",
+    body: "Turn stable browser work into immutable recipes with exact origins, declared risk and durable postconditions — then search and run in two calls.",
+    icon: Sparkles,
   },
   {
     label: "your auth",
@@ -109,19 +167,84 @@ const why: PanelItem[] = [
       href: mcplexerWorkspacesUrl,
     },
   },
+];
+
+const benchmarks = [
   {
-    label: "whole web",
-    title: "The whole web, not a sandbox",
-    body: "A real browser on your profile reaches any page you can — gated dashboards, signed-in apps, content a locked-down agent browser can't.",
-    icon: Globe,
+    value: "2.31×",
+    title: "faster event settling",
+    body: "Pre-armed semantic waits versus arming after a synchronous DOM reaction.",
+  },
+  {
+    value: "51.9×",
+    title: "less proxy transfer",
+    body: "A bounded browser-host read instead of hauling the full payload across HTTP.",
+  },
+  {
+    value: "6,332×",
+    title: "smaller capture result",
+    body: "A compact artifact handle instead of inline base64 for a 1.31 MB capture.",
+  },
+  {
+    value: "69.9%",
+    title: "less tool catalogue context",
+    body: "The default auto profile at startup versus advertising all 62 tools every turn.",
+  },
+];
+
+const comparisonRows = [
+  {
+    label: "What it is",
+    brw: "Open browser-control infrastructure for agents and automation systems.",
+    claude: "Anthropic's end-user browser agent inside Claude products.",
+  },
+  {
+    label: "Who can drive it",
+    brw: "Any MCP client or HTTP client — Claude, Codex, Cursor, pi, your own service.",
+    claude: "Claude Code, Claude Cowork and the Claude side panel.",
+  },
+  {
+    label: "Browser support",
+    brw: "Chrome and Chromium; local or on a remote browser host over SSH.",
+    claude: "Google Chrome; other Chromium browsers are not supported.",
+  },
+  {
+    label: "Signed-in browser",
+    brw: "Yes — bridge into an installed profile, or use a dedicated direct-CDP profile.",
+    claude: "Yes — works alongside the user's signed-in Chrome session.",
+  },
+  {
+    label: "Control contract",
+    brw: "Stable semantic refs, bounded reads, observations after actions, assertions, batch, plan, cancel and trace.",
+    claude: "Reads, clicks, types, navigates and fills forms; also exposes screenshots, console, network and DOM context.",
+  },
+  {
+    label: "Efficiency evidence",
+    brw: "Public local probes: 2.31× faster event settling, 51.9× less proxy transfer, 6,332× smaller capture results and 69.9% less initial tool context.",
+    claude: "No equivalent low-level benchmark is published in Anthropic's feature guide; private brw runs were directionally faster, not a numeric public claim.",
+  },
+  {
+    label: "Reusable work",
+    brw: "Private schema-validated recipes pinned by id, version and digest, with origin/risk/postcondition gates.",
+    claude: "Recorded workflows in the classic side panel, reusable shortcuts and scheduled tasks.",
+  },
+  {
+    label: "Large outputs",
+    brw: "Browser-host artifacts for text, JSON, images, PDFs, downloads and video, read back in bounded windows.",
+    claude: "No comparable public artifact-handle API is documented.",
+  },
+  {
+    label: "Ownership",
+    brw: "Self-hosted, AGPL-3.0 source, local data path, optional commercial licence.",
+    claude: "Proprietary Anthropic service; available on paid Claude plans.",
   },
 ];
 
 const facts = [
-  ["control", "MCP + HTTP"],
-  ["from", "Revitt"],
+  ["surface", "62 tools"],
+  ["fast path", "2-call recipes"],
+  ["clients", "MCP + HTTP"],
   ["licence", "AGPL-3.0"],
-  ["source", "GitHub"],
 ];
 
 const footerGroups = [
@@ -164,10 +287,10 @@ export default async function HomePage() {
         </Link>
         <nav className="main-nav" aria-label="Main navigation">
           <a href="#why">Why</a>
-          <a href="#what">What</a>
+          <a href="#recipes">Recipes</a>
           <a href="#features">Features</a>
-          <a href="#quickstart">Quick start</a>
-          <a href="#install">Install</a>
+          <a href="#compare">Compare</a>
+          <a href="#quickstart">Setup</a>
           <a href="#safety">Safety</a>
           <Link href={brwUrl} target="_blank" rel="noopener noreferrer">
             GitHub
@@ -186,15 +309,17 @@ export default async function HomePage() {
               <span aria-hidden="true" />
               open source by Revitt
             </p>
-            <h1 className="hero-mark">
+            <div className="hero-mark" aria-hidden="true">
               <BrwMark title="brw" />
+            </div>
+            <h1 className="hero-tagline">
+              Control Chrome completely. Quickly. With recipes.
             </h1>
-            <p className="hero-tagline">Semantic browser control for agents.</p>
             <p className="hero-lede">
-              brw runs a real, visible Chrome and exposes it over MCP and HTTP.
-              Agents act from stable refs like <code>e17</code> instead of CSS
-              selectors or screenshots, and get a plain observation back after
-              every action — so they know what actually happened.
+              brw gives any agent fast, inspectable control of real Chrome.
+              Stable refs replace pixel hunting, every action reports what
+              changed, and deterministic recipes turn proven browser work into
+              a two-call run.
             </p>
             <div className="hero-actions">
               <Link
@@ -206,9 +331,9 @@ export default async function HomePage() {
                 <Github aria-hidden="true" />
                 Download installer
               </Link>
-              <a href="#quickstart" className="button button-secondary">
-                <Terminal aria-hidden="true" />
-                Quick start
+              <a href="#compare" className="button button-secondary">
+                <Gauge aria-hidden="true" />
+                See the proof
               </a>
             </div>
             {version ? (
@@ -235,11 +360,11 @@ export default async function HomePage() {
           <div className="section-inner">
             <div className="section-header">
               <p className="section-kicker">why brw</p>
-              <h2>Built to win on real web work</h2>
+              <h2>Control more. Spend less. Repeat what works.</h2>
               <p>
-                Other agent browsers burn tokens re-reading pixels, lock you to
-                one vendor, and stall at the login wall. brw takes the other
-                path.
+                Most browser agents are a feature inside one product. brw is the
+                browser-control layer: open, inspectable and reusable from any
+                agent that speaks MCP or HTTP.
               </p>
             </div>
             <div className="panel-grid panel-grid-4">
@@ -270,13 +395,13 @@ export default async function HomePage() {
         <section id="what" className="section section-alt">
           <div className="section-inner split-layout">
             <div className="section-header section-header-sticky">
-              <p className="section-kicker">what it is</p>
-              <h2>A real browser agents can drive by ref</h2>
+              <p className="section-kicker">the fast loop</p>
+              <h2>See it. Act once. Reuse it.</h2>
               <p>
-                brw controls headed Chrome/Chromium through CDP and exposes it as
-                MCP tools and an HTTP JSON API. It is the actual web — signed-in
-                tabs, real clicks and forms — not a sandboxed copy or a stack of
-                screenshots.
+                The normal path is semantic and compact: inspect only what the
+                next action needs, act by ref, and read the returned delta. Once
+                the flow is stable, move it into a recipe instead of asking a
+                model to rediscover it forever.
               </p>
             </div>
             <div className="stacked-panels">
@@ -284,37 +409,35 @@ export default async function HomePage() {
                 <span>ref</span>
                 <div>
                   <MousePointerClick aria-hidden="true" />
-                  <h3>Act from stable refs</h3>
+                  <h3>Find stable refs</h3>
                   <p>
-                    Snapshots combine DOM and accessibility data into stable
-                    refs like <code>e17</code>. Agents click, type, fill, select,
-                    scroll, drag, upload, wait and assert by ref — not by brittle
-                    CSS selectors or by re-reading a screenshot every turn.
+                    Snapshot the actionable frontier or find one control by
+                    role, name, text or test id. brw returns stable refs like{" "}
+                    <code>e17</code>, not brittle selectors.
                   </p>
                 </div>
               </article>
               <article className="wide-panel">
                 <span>read</span>
                 <div>
-                  <ScanSearch aria-hidden="true" />
-                  <h3>Read the page semantically</h3>
+                  <Zap aria-hidden="true" />
+                  <h3>Act and read the change</h3>
                   <p>
-                    Pull prose, links, headings, forms, tables and structured
-                    product data straight from the page. Screenshots are kept as
-                    a visual fallback, with optional Set-of-Marks overlays.
+                    Click, type, fill, select, drag, upload or commit. The action
+                    returns URL, focus and changed elements, so the agent does
+                    not spend another turn asking whether it worked.
                   </p>
                 </div>
               </article>
               <article className="wide-panel">
                 <span>observe</span>
                 <div>
-                  <Eye aria-hidden="true" />
-                  <h3>An observation after every action</h3>
+                  <Repeat aria-hidden="true" />
+                  <h3>Promote the proven flow</h3>
                   <p>
-                    Every action returns a post-action observation, so the agent
-                    knows what changed instead of guessing. Acting from refs and
-                    observations means fewer turns, less token spend and less
-                    wall time than re-interpreting pixels.
+                    Trace or draft the successful mechanics, validate the
+                    semantic targets and install an immutable recipe. Next time:
+                    search, pin and run.
                   </p>
                 </div>
               </article>
@@ -322,37 +445,195 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section id="features" className="section">
-          <div className="section-inner">
+        <section id="recipes" className="section recipe-section">
+          <div className="section-inner recipe-layout">
             <div className="section-header">
-              <p className="section-kicker">what&apos;s inside</p>
-              <h2>Built for real, signed-in web work</h2>
+              <p className="section-kicker">recipes</p>
+              <h2>Stop paying the model to rediscover solved work.</h2>
               <p>
-                The full MCP surface is large; run{" "}
-                <code>brwd --mcp --mcp-tools core</code> to advertise just the
-                common-flow tools while keeping everything callable.
+                A brw recipe is a private, deterministic browser workflow — not
+                a saved prompt. Search returns safe metadata. Run fetches the
+                exact immutable version and executes it beside the browser with
+                origin, risk and postcondition checks.
               </p>
+              <Link
+                href={brwRecipeDocsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-link"
+              >
+                Read the recipe architecture →
+              </Link>
             </div>
-            <div className="panel-grid">
-              {features.map(({ icon: Icon, ...item }) => (
-                <article key={item.title} className="info-panel">
-                  <div className="panel-topline">
-                    <span>{item.label}</span>
-                    <Icon aria-hidden="true" />
-                  </div>
-                  <h3>{item.title}</h3>
-                  <p>{item.body}</p>
-                </article>
-              ))}
+
+            <div className="recipe-console">
+              <div className="recipe-console-head">
+                <span>known workflow</span>
+                <span>two calls</span>
+              </div>
+              <div className="recipe-command">
+                <span>01 / search</span>
+                <code>
+                  brw_recipe_search {"{"} query, origin {"}"}
+                </code>
+                <p>Returns id, version, digest, risk and score — never the private steps.</p>
+              </div>
+              <div className="recipe-arrow" aria-hidden="true">
+                ↓ pin the exact match
+              </div>
+              <div className="recipe-command recipe-command-hot">
+                <span>02 / run</span>
+                <code>
+                  brw_recipe_run {"{"} id, version, digest, inputs {"}"}
+                </code>
+                <p>Returns status, attempts, timings and artifact handles.</p>
+              </div>
             </div>
+
+            <ul className="recipe-guarantees" aria-label="Recipe guarantees">
+              <li>
+                <Fingerprint aria-hidden="true" />
+                <span>
+                  <strong>Immutable identity</strong>
+                  An id, semantic version and SHA-256 digest must all match.
+                </span>
+              </li>
+              <li>
+                <ShieldCheck aria-hidden="true" />
+                <span>
+                  <strong>Safe writes</strong>
+                  Exact origins, one allowed actuation and durable postconditions.
+                </span>
+              </li>
+              <li>
+                <FileText aria-hidden="true" />
+                <span>
+                  <strong>Private by design</strong>
+                  Recipe bodies and credentials stay outside the public repo.
+                </span>
+              </li>
+            </ul>
           </div>
         </section>
 
-        <section id="quickstart" className="section section-alt">
+        <section id="features" className="section">
+          <div className="section-inner">
+            <div className="section-header">
+              <p className="section-kicker">the full surface</p>
+              <h2>Everything the agent needs. One browser layer.</h2>
+              <p>
+                brw exposes 62 tools today, but does not dump all 62 into every
+                prompt. The default starts lean and discloses the long tail only
+                when the agent asks for it.
+              </p>
+            </div>
+            <div className="capability-grid">
+              {capabilityGroups.map(({ icon: Icon, ...group }) => (
+                <article key={group.title} className="capability-panel">
+                  <div className="panel-topline">
+                    <span>{group.label}</span>
+                    <Icon aria-hidden="true" />
+                  </div>
+                  <h3>{group.title}</h3>
+                  <p>{group.body}</p>
+                  <ul>
+                    {group.items.map((item) => (
+                      <li key={item}>
+                        <Check aria-hidden="true" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+            <p className="feature-footnote">
+              Need the smallest possible prompt? Use <code>--mcp-tools auto</code>,{" "}
+              <code>core</code> or <code>minimal</code>. Every tool remains
+              discoverable and directly callable.
+            </p>
+          </div>
+        </section>
+
+        <section id="compare" className="section section-alt comparison-section">
+          <div className="section-inner">
+            <div className="section-header comparison-header">
+              <p className="section-kicker">proof + comparison</p>
+              <h2>Built to do more work with less browser overhead.</h2>
+              <p>
+                Private pre-release head-to-heads against Claude in Chrome moved
+                in the same direction: fewer turns, fewer tokens, less wall time
+                and lower estimated cost. Those transcripts contain private page
+                state, so we label that result directional — not a public numeric
+                promise.
+              </p>
+            </div>
+
+            <div className="benchmark-grid" aria-label="Reproducible brw measurements">
+              {benchmarks.map((benchmark) => (
+                <article key={benchmark.title} className="benchmark-card">
+                  <strong>{benchmark.value}</strong>
+                  <h3>{benchmark.title}</h3>
+                  <p>{benchmark.body}</p>
+                </article>
+              ))}
+            </div>
+            <p className="benchmark-note">
+              Reproducible Apple M4 Max samples from September 2026. These are
+              brw engineering probes, not Claude measurements.{" "}
+              <Link href={brwBenchmarksUrl} target="_blank" rel="noopener noreferrer">
+                Methods and caveats →
+              </Link>
+            </p>
+
+            <div className="comparison-intro">
+              <div>
+                <p className="section-kicker">brw vs Claude in Chrome</p>
+                <h3>Infrastructure versus a finished assistant.</h3>
+              </div>
+              <p>
+                Claude in Chrome is polished and capable. brw wins when you need
+                an open, agent-agnostic control layer, deterministic execution or
+                an API you own. Here is the fair comparison.
+              </p>
+            </div>
+
+            <div className="comparison-wrap" tabIndex={0}>
+              <table className="comparison-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Capability</th>
+                    <th scope="col" className="brw-column">brw</th>
+                    <th scope="col">Claude in Chrome</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparisonRows.map((row) => (
+                    <tr key={row.label}>
+                      <th scope="row">{row.label}</th>
+                      <td className="brw-column">{row.brw}</td>
+                      <td>{row.claude}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="comparison-note">
+              Compared from public documentation checked 10 September 2026.{" "}
+              <a href={claudeChromeGuideUrl} target="_blank" rel="noopener noreferrer">
+                Read Anthropic&apos;s current feature guide
+              </a>
+              . Claude is an Anthropic product; brw is independent and is not
+              affiliated with or endorsed by Anthropic.
+            </p>
+          </div>
+        </section>
+
+        <section id="quickstart" className="section">
           <div className="section-inner split-layout">
             <div className="section-header section-header-sticky">
               <p className="section-kicker">quick start</p>
-              <h2>Install, then run as MCP</h2>
+              <h2>Install. Start brw. Give your agent Chrome.</h2>
               <p>
                 Native installers put <code>brwd</code>, <code>brwctl</code>,
                 <code>brwcheck</code>, and <code>brw-devtools-mcp</code> on your
@@ -439,7 +720,7 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section id="install" className="section">
+        <section id="install" className="section section-alt">
           <div className="section-inner split-layout">
             <div className="section-header section-header-sticky">
               <p className="section-kicker">install</p>
@@ -579,9 +860,9 @@ export default async function HomePage() {
                   </p>
                 ) : (
                   <p>
-                    A one-click Chrome Web Store build is in review; until it
-                    lands, load-unpacked installs the exact same extension and
-                    ID.
+                    A one-click Chrome Web Store build is being prepared for
+                    review; until it lands, load-unpacked installs the same
+                    extension from source.
                   </p>
                 )}
               </div>
@@ -597,12 +878,15 @@ export default async function HomePage() {
               <p>
                 brw uses a normal visible browser and a persistent user profile.
                 It does <strong>not</strong> add stealth code, CAPTCHA bypass,
-                MFA bypass, fraud-check bypass, consent bypass or cookie
-                extraction. Browser-control HTTP binds to loopback by default;
-                for remote use, prefer stdio MCP over SSH so the profile stays on
-                the machine that owns it. Released under AGPL-3.0 — free to use,
-                change and build on, with improvements shared back. If that
-                doesn&apos;t fit your business,{" "}
+                MFA bypass, fraud-check bypass or consent bypass. The
+                installed-profile extension refuses HttpOnly cookie and bulk
+                storage access; explicit cookie tools exist only for dedicated
+                direct-CDP profiles. Browser-control HTTP binds to loopback by
+                default, recipes declare their risk, and mutating requests are
+                guarded. For remote use, prefer stdio MCP over SSH so the profile
+                stays on the machine that owns it. Released under AGPL-3.0 — free
+                to use, change and build on, with improvements shared back. If
+                that doesn&apos;t fit your business,{" "}
                 <Link
                   href={`${revittUrl}&utm_content=safety_commercial`}
                   target="_blank"
@@ -635,8 +919,8 @@ export default async function HomePage() {
             <div>
               <span>brw</span>
               <p>
-                Semantic browser control for agents. An open-source tool from the
-                Don Works bench at Revitt.
+                Complete Chrome control for agents — fast by default, repeatable
+                by recipe. An open-source tool from Revitt&apos;s Don Works bench.
               </p>
             </div>
           </div>

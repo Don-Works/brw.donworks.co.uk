@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">brw — complete Chrome control for agents</title>
+  <desc id="desc">A dark technical grid with the brw mark and the message Control Chrome completely. Quickly. With recipes.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#170412"/>
+      <stop offset="0.48" stop-color="#050604"/>
+      <stop offset="1" stop-color="#06131a"/>
+    </linearGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#ff2ec4" stroke-opacity="0.09" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ff2ec4" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#ff2ec4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#background)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <ellipse cx="850" cy="280" rx="360" ry="310" fill="url(#halo)"/>
+
+  <g transform="translate(824 114)">
+    <rect x="0" y="0" width="238" height="238" rx="8" fill="#080808" stroke="#ff2ec4" stroke-width="20"/>
+    <rect x="96" y="96" width="46" height="46" rx="13" fill="#ff2ec4"/>
+    <path d="M-78 119h62M254 119h62" stroke="#ff2ec4" stroke-width="2" stroke-opacity="0.68"/>
+    <circle cx="-90" cy="119" r="5" fill="#ff2ec4"/>
+    <circle cx="328" cy="119" r="5" fill="#ff2ec4"/>
+  </g>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <text x="92" y="96" fill="#ff8fe0" font-size="20" font-weight="700" letter-spacing="7">— OPEN SOURCE BY REVITT</text>
+    <text x="82" y="272" fill="#ff2ec4" font-size="174" font-weight="900" letter-spacing="-14">brw</text>
+    <text x="92" y="368" fill="#edf2e6" font-size="43" font-weight="800" letter-spacing="-1">CONTROL CHROME COMPLETELY.</text>
+    <text x="92" y="424" fill="#edf2e6" font-size="43" font-weight="800" letter-spacing="-1">QUICKLY. WITH RECIPES.</text>
+
+    <g font-size="18" font-weight="700">
+      <rect x="92" y="502" width="154" height="54" fill="#140f13" stroke="#49313f"/>
+      <text x="169" y="536" fill="#ff8fe0" text-anchor="middle">62 TOOLS</text>
+      <rect x="262" y="502" width="174" height="54" fill="#140f13" stroke="#49313f"/>
+      <text x="349" y="536" fill="#ff8fe0" text-anchor="middle">MCP + HTTP</text>
+      <rect x="452" y="502" width="174" height="54" fill="#140f13" stroke="#49313f"/>
+      <text x="539" y="536" fill="#ff8fe0" text-anchor="middle">AGPL-3.0</text>
+    </g>
+  </g>
+
+  <text x="1100" y="556" fill="#ad9ba8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" text-anchor="end">brw.donworks.co.uk</text>
+</svg>

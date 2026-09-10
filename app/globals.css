@@ -573,6 +573,365 @@ a {
   text-decoration: underline;
 }
 
+.text-link,
+.benchmark-note a,
+.comparison-note a {
+  color: var(--color-magenta);
+  text-decoration: none;
+}
+
+.text-link {
+  display: inline-block;
+  margin-top: 1.25rem;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.text-link:hover,
+.text-link:focus-visible,
+.benchmark-note a:hover,
+.benchmark-note a:focus-visible,
+.comparison-note a:hover,
+.comparison-note a:focus-visible {
+  color: var(--color-magenta-soft);
+  text-decoration: underline;
+  outline: none;
+}
+
+/* recipes — the product's repeatable-work differentiator */
+.recipe-section {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 28%, color-mix(in srgb, var(--color-magenta) 13%, transparent), transparent 32%),
+    linear-gradient(120deg, color-mix(in srgb, var(--color-cyan) 7%, transparent), transparent 40%),
+    var(--color-bg);
+}
+
+.recipe-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-border) 28%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-border) 28%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(90deg, transparent 8%, #000 72%, transparent);
+}
+
+.recipe-layout {
+  position: relative;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.recipe-console {
+  border: 1px solid color-mix(in srgb, var(--color-magenta) 58%, var(--color-border));
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-bg) 66%, transparent),
+    0 22px 80px color-mix(in srgb, var(--color-magenta) 10%, transparent);
+}
+
+.recipe-console-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.7rem 0.9rem;
+  color: var(--color-text-dim);
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.recipe-command {
+  padding: 1.1rem;
+}
+
+.recipe-command > span {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--color-cyan-soft);
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.recipe-command code {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--color-text);
+  font-size: clamp(0.75rem, 2.4vw, 0.9rem);
+  line-height: 1.6;
+}
+
+.recipe-command p {
+  margin: 0.7rem 0 0;
+  color: var(--color-text-dim);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.recipe-command-hot {
+  background: color-mix(in srgb, var(--color-magenta) 7%, transparent);
+}
+
+.recipe-command-hot > span,
+.recipe-command-hot code {
+  color: var(--color-magenta-soft);
+}
+
+.recipe-arrow {
+  border-block: 1px solid var(--color-border);
+  padding: 0.55rem 1.1rem;
+  color: var(--color-magenta);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
+.recipe-guarantees {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recipe-guarantees li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.8rem;
+  align-items: start;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 78%, transparent);
+  padding: 0.9rem;
+  color: var(--color-text-muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.recipe-guarantees svg {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.14rem;
+  color: var(--color-magenta);
+}
+
+.recipe-guarantees strong {
+  display: block;
+  margin-bottom: 0.18rem;
+  color: var(--color-text);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+/* exhaustive feature groups */
+.capability-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  margin-top: 2rem;
+}
+
+.capability-panel {
+  border: 1px solid var(--color-border);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-magenta) 6%, transparent), transparent 48%),
+    var(--color-surface);
+  padding: 1.25rem;
+}
+
+.capability-panel h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.capability-panel > p {
+  margin: 0.7rem 0 1rem;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.capability-panel ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.capability-panel li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.58rem;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.capability-panel li svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-top: 0.18rem;
+  color: var(--color-cyan-soft);
+}
+
+.feature-footnote,
+.benchmark-note,
+.comparison-note {
+  color: var(--color-text-dim);
+  font-size: 0.74rem;
+  line-height: 1.65;
+}
+
+.feature-footnote {
+  margin: 1.25rem 0 0;
+}
+
+/* proof + comparison */
+.comparison-section {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-cyan) 5%, transparent), transparent 34%),
+    var(--color-bg-alt);
+}
+
+.comparison-header {
+  max-width: 820px;
+}
+
+.benchmark-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+  margin-top: 2rem;
+}
+
+.benchmark-card {
+  border-top: 2px solid var(--color-magenta);
+  background: var(--color-surface);
+  padding: 1.1rem;
+}
+
+.benchmark-card > strong {
+  display: block;
+  color: var(--color-magenta);
+  font-size: clamp(1.8rem, 7vw, 3rem);
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+
+.benchmark-card h3 {
+  margin: 0.7rem 0 0;
+  color: var(--color-text);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.benchmark-card p {
+  margin: 0.6rem 0 0;
+  color: var(--color-text-dim);
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.benchmark-note {
+  margin: 0.9rem 0 0;
+}
+
+.comparison-intro {
+  display: grid;
+  gap: 1rem;
+  margin-top: 4rem;
+  align-items: end;
+}
+
+.comparison-intro h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.35rem, 4vw, 2.1rem);
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.comparison-intro > p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.comparison-wrap {
+  margin-top: 1.35rem;
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  outline: none;
+}
+
+.comparison-wrap:focus-visible {
+  border-color: var(--color-magenta);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-magenta) 22%, transparent);
+}
+
+.comparison-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.9rem 1rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.comparison-table thead th {
+  color: var(--color-text);
+  font-size: 0.69rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.comparison-table tbody th {
+  width: 18%;
+  color: var(--color-text);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.comparison-table tbody td {
+  width: 41%;
+  color: var(--color-text-muted);
+}
+
+.comparison-table .brw-column {
+  background: color-mix(in srgb, var(--color-magenta) 6%, transparent);
+  color: var(--color-text);
+}
+
+.comparison-table thead .brw-column {
+  color: var(--color-magenta-soft);
+}
+
+.comparison-table tbody tr:last-child th,
+.comparison-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.comparison-note {
+  margin: 0.9rem 0 0;
+}
+
 /* install section — extension ID + the two install routes */
 .install-id {
   margin-top: 0.85rem;
@@ -923,6 +1282,10 @@ a {
   .facts-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .benchmark-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 760px) {
@@ -936,6 +1299,10 @@ a {
 
   .panel-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .capability-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .closing-shell {
@@ -966,6 +1333,29 @@ a {
 
   .split-layout {
     grid-template-columns: 0.9fr 1.1fr;
+    gap: 3rem;
+  }
+
+  .recipe-layout {
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+    gap: 1.25rem 3rem;
+  }
+
+  .recipe-layout > .section-header {
+    grid-row: span 2;
+    align-self: center;
+  }
+
+  .capability-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .benchmark-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .comparison-intro {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     gap: 3rem;
   }
 
