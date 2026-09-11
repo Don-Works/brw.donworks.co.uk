@@ -16,6 +16,17 @@ const nextConfig: NextConfig = {
         headers: securityHeaders,
       },
       {
+        // the one-line installer: `curl -fsSL .../install.sh | sh`. Served as a
+        // script, never cached (a stale CDN copy would install a stale brw), and
+        // never offered as a download so the URL stays readable in a browser.
+        source: "/install.sh",
+        headers: [
+          { key: "Content-Type", value: "text/x-shellscript; charset=utf-8" },
+          { key: "Cache-Control", value: "no-store, max-age=0, must-revalidate" },
+          { key: "Content-Disposition", value: "inline" },
+        ],
+      },
+      {
         // self-hosted extension package — served for ExtensionInstallForcelist
         source: "/brw.crx",
         headers: [{ key: "Content-Type", value: "application/x-chrome-extension" }],

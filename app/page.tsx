@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { BrwMark } from "./components/BrwMark";
 import {
+  BadgeCheck,
   Bot,
   Check,
   Eye,
+  FileCode,
   FileText,
   Fingerprint,
   Gauge,
@@ -11,10 +13,14 @@ import {
   KeyRound,
   Layers,
   MousePointerClick,
+  Puzzle,
   Repeat,
   ScanSearch,
+  ScrollText,
   ShieldCheck,
+  Signature,
   Sparkles,
+  Terminal,
   Zap,
   type LucideIcon,
 } from "lucide-react";
@@ -42,6 +48,14 @@ const brwInstallDocsUrl = "https://github.com/Don-Works/brw/blob/main/docs/insta
 const brwBenchmarksUrl = "https://github.com/Don-Works/brw/blob/main/docs/benchmarks.md";
 const brwRecipeDocsUrl =
   "https://github.com/Don-Works/brw/blob/main/docs/recipes-and-artifacts.md";
+const brwAuthModelUrl = "https://github.com/Don-Works/brw/blob/main/docs/auth-model.md";
+const brwLicenceUrl = "https://github.com/Don-Works/brw/blob/main/LICENSE";
+const brwReleaseWorkflowUrl =
+  "https://github.com/Don-Works/brw/blob/main/.github/workflows/release.yml";
+// Served from public/install.sh with a no-store text/x-shellscript header, so the
+// URL a reader opens in a browser is byte-for-byte what `curl | sh` executes.
+const installScriptPath = "/install.sh";
+const installCommand = "curl -fsSL https://brw.donworks.co.uk/install.sh | sh";
 const claudeChromeGuideUrl =
   "https://support.claude.com/en/articles/12012173-get-started-with-claude-in-chrome";
 const extensionId = "amocjcgddnoakjijfggdpnefdnboilpe";
@@ -240,6 +254,122 @@ const comparisonRows = [
   },
 ];
 
+const transportRows = [
+  {
+    label: "The browser it drives",
+    bridge: "The Chrome or Chromium you already have open and signed in.",
+    direct: "A separate Chrome or Chromium that brw launches, on a profile brw owns.",
+  },
+  {
+    label: "Where the logins come from",
+    bridge: "Sessions, cookies and passkeys that are already in that profile.",
+    direct:
+      "Sign in once with brwd --login; the profile keeps the session for later headless runs.",
+  },
+  {
+    label: "Chrome tab groups",
+    bridge: "Yes — chrome.tabGroups keeps the agent's tabs in one labelled group.",
+    direct: "No. chrome.tabGroups is an extension API with no DevTools Protocol equivalent.",
+  },
+  {
+    label: "Incognito contexts",
+    bridge: "No.",
+    direct:
+      "Yes — brw_open_incognito opens an isolated context, brw_close_context disposes it.",
+  },
+  {
+    label: "Cookie tools",
+    bridge:
+      "No. The extension refuses every cookie CDP method, HttpOnly included, to protect the signed-in profile.",
+    direct: "Yes — brw_cookies lists, sets and deletes, HttpOnly cookies included.",
+  },
+  {
+    label: "Downloads",
+    bridge:
+      "Files land in the browser's own download folder. Capturing the bytes as an artifact can need macOS Files & Folders consent; the metadata-only event does not.",
+    direct: "Deterministic — files are staged in brw's private cache, no Downloads access needed.",
+  },
+  {
+    label: "Headless",
+    bridge: "No. --headless with --bridge is refused rather than ignored.",
+    direct: "Yes, once the profile has been signed into.",
+  },
+  {
+    label: "How it starts",
+    bridge: "brwd --bridge, plus the extension loaded in that browser.",
+    direct: "brwd --mcp --http off. No extension involved.",
+  },
+];
+
+const trustGroups: CapabilityGroup[] = [
+  {
+    label: "source",
+    title: "AGPL-3.0, all of it",
+    body: "Daemon, CLI and extension are in one public repository under one licence.",
+    icon: ScrollText,
+    items: [
+      "The extension ships unminified — every file in the package is a file in the repo",
+      "No telemetry, no analytics, no account, no Don Works service in the data path",
+      "Improvements flow back under the same licence; a commercial licence is available",
+    ],
+  },
+  {
+    label: "provenance",
+    title: "Every artifact is attested",
+    body: "A checksum proves a file matches the release. An attestation proves what built the release.",
+    icon: BadgeCheck,
+    items: [
+      "GitHub build-provenance attestation is generated for every release artifact",
+      "SHA256SUMS.txt covers every installer in the release",
+      "A CycloneDX SBOM ships alongside them as brw_<version>_sbom.cdx.json",
+    ],
+  },
+  {
+    label: "signing",
+    title: "Developer ID and Authenticode are landing",
+    body: "Neither is in a published release yet. Both land in the next one.",
+    icon: Signature,
+    items: [
+      "macOS: Developer ID signing and notarisation for the .pkg",
+      "Windows: Authenticode signing for the .msi",
+      "Until then, the attestation is the check that identifies the builder",
+    ],
+  },
+  {
+    label: "pipeline",
+    title: "What a tag has to pass",
+    body: "A release builds only after the gate in the public workflow file.",
+    icon: FileCode,
+    items: [
+      "Unit tests plus a deterministic real-browser functional suite",
+      "go vet, staticcheck and govulncheck for reachable vulnerabilities",
+      "A gitleaks scan of the full git history on every release",
+    ],
+  },
+  {
+    label: "extension",
+    title: "One permanent extension id",
+    body: "The daemon trusts that id with no configuration.",
+    icon: Puzzle,
+    items: [
+      "amocjcgddnoakjijfggdpnefdnboilpe, pinned by the public key in the manifest",
+      "Load-unpacked and self-hosted CRX builds resolve to the same id",
+      "A re-signed build gets a different id, and an unconfigured bridge will not accept it",
+    ],
+  },
+  {
+    label: "boundaries",
+    title: "What the extension cannot do",
+    body: "These refusals are implemented in the extension's service worker.",
+    icon: ShieldCheck,
+    items: [
+      "Cookie CDP methods are refused, HttpOnly cookies included",
+      "Storage, DOMStorage, IndexedDB, CacheStorage and Database domains are refused",
+      "Password, one-time-code and card fields are masked out of snapshots and reads",
+    ],
+  },
+];
+
 const facts = [
   ["surface", "62 tools"],
   ["fast path", "2-call recipes"],
@@ -252,7 +382,16 @@ const footerGroups = [
     title: "brw",
     links: [
       ["brw on GitHub", brwUrl],
+      ["install.sh", installScriptPath],
       ["llms.txt", "/llms.txt"],
+    ],
+  },
+  {
+    title: "Policies",
+    links: [
+      ["Privacy policy", "/privacy"],
+      ["Extension privacy policy", "/privacy/extension"],
+      ["Licence (AGPL-3.0)", brwLicenceUrl],
     ],
   },
   {
@@ -290,7 +429,8 @@ export default async function HomePage() {
           <a href="#recipes">Recipes</a>
           <a href="#features">Features</a>
           <a href="#compare">Compare</a>
-          <a href="#quickstart">Setup</a>
+          <a href="#install">Install</a>
+          <a href="#trust">Trust</a>
           <a href="#safety">Safety</a>
           <Link href={brwUrl} target="_blank" rel="noopener noreferrer">
             GitHub
@@ -322,15 +462,10 @@ export default async function HomePage() {
               into a two-call run.
             </p>
             <div className="hero-actions">
-              <Link
-                href={downloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="button button-primary"
-              >
-                <Github aria-hidden="true" />
-                Download installer
-              </Link>
+              <a href="#install" className="button button-primary">
+                <Terminal aria-hidden="true" />
+                Install brw
+              </a>
               <a href="#compare" className="button button-secondary">
                 <Gauge aria-hidden="true" />
                 See the proof
@@ -629,44 +764,94 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section id="quickstart" className="section">
-          <div className="section-inner split-layout">
-            <div className="section-header section-header-sticky">
-              <p className="section-kicker">quick start</p>
-              <h2>Install. Start brw. Give your agent Chrome or Chromium.</h2>
+        <section id="install" className="section">
+          <div className="section-inner">
+            <div className="section-header">
+              <p className="section-kicker">install</p>
+              <h2>One command, no administrator rights</h2>
               <p>
-                Native installers put <code>brwd</code>, <code>brwctl</code>,
-                <code>brwcheck</code>, and <code>brw-devtools-mcp</code> on your
-                PATH. Pick the release asset for your platform, then run the
-                daemon as stdio MCP or expose the HTTP API on loopback.
-              </p>
-              <p>
-                For remote and installed-Chrome setups, see the{" "}
-                <Link href={brwInstallDocsUrl} target="_blank" rel="noopener noreferrer">
-                  install docs
-                </Link>
-                .
+                The installer puts brw under your home directory and hands off
+                to <code>brwctl setup</code>, which starts the bridge daemon in
+                the background, registers brw with your MCP client and installs
+                the agent skill.
               </p>
             </div>
-            <div className="stacked-panels">
+
+            <div className="install-lead">
+              <p className="install-route-head">
+                <span className="install-badge">start here</span>
+                macOS and Linux
+              </p>
+              <pre className="codeblock codeblock-lead">
+                <code>
+                  <span className="prompt">$ </span>
+                  {installCommand}
+                </code>
+              </pre>
+              <p className="install-lead-note">
+                That command runs a shell script fetched over the network, so
+                read it first.{" "}
+                <a className="text-link" href={installScriptPath}>
+                  install.sh
+                </a>{" "}
+                is served from this site as plain text, with no caching, and is
+                the same file the command executes.
+              </p>
+              <ol className="steps">
+                <li>
+                  Puts <code>brwd</code>, <code>brwctl</code>,{" "}
+                  <code>brwcheck</code> and <code>brw-devtools-mcp</code> under
+                  your home directory. No <code>sudo</code>, nothing written
+                  outside it.
+                </li>
+                <li>
+                  Runs <code>brwctl setup</code>: the bridge daemon starts in
+                  the background, brw is registered with your MCP client, and
+                  the bundled agent skill is installed.
+                </li>
+                <li>
+                  Leaves you one step — connecting a browser, below. Everything
+                  else is done.
+                </li>
+              </ol>
+            </div>
+
+            <div className="install-routes">
               <div className="install-route">
                 <p className="install-route-head">
-                  <span className="install-badge">recommended</span>
-                  Native installers from GitHub releases
+                  <span className="install-badge install-badge-soon">
+                    homebrew
+                  </span>
+                  macOS and Linux
                 </p>
-                <ul className="steps">
-                  <li>
-                    <strong>Windows:</strong> <code>.msi</code> for amd64 or
-                    arm64.
-                  </li>
-                  <li>
-                    <strong>macOS:</strong> universal <code>.pkg</code>.
-                  </li>
-                  <li>
-                    <strong>Linux:</strong> <code>.deb</code> or{" "}
-                    <code>.rpm</code> for amd64 or arm64.
-                  </li>
-                </ul>
+                <p>
+                  The tap ships the same binaries and keeps them updated with
+                  the rest of your formulae. Run <code>brwctl setup</code>{" "}
+                  afterwards to do what the installer would have done.
+                </p>
+                <pre className="codeblock">
+                  <code>
+                    <span className="prompt">$ </span>brew install don-works/tap/brw
+                    {"\n"}
+                    <span className="prompt">$ </span>brwctl setup
+                  </code>
+                </pre>
+              </div>
+
+              <div className="install-route">
+                <p className="install-route-head">
+                  <span className="install-badge install-badge-soon">
+                    macOS pkg
+                  </span>
+                  Admin and MDM installs
+                </p>
+                <p>
+                  A universal <code>.pkg</code> that installs machine-wide under{" "}
+                  <code>/usr/local</code>. Take this route when you are
+                  deploying to someone else&apos;s machine, or when policy
+                  requires a package your MDM can ship. It needs administrator
+                  rights; the one-line installer does not.
+                </p>
                 <Link
                   href={brwReleasesUrl}
                   target="_blank"
@@ -677,23 +862,129 @@ export default async function HomePage() {
                   Open releases
                 </Link>
               </div>
+
+              <div className="install-route">
+                <p className="install-route-head">
+                  <span className="install-badge install-badge-soon">linux</span>
+                  .deb and .rpm
+                </p>
+                <p>
+                  <code>brw_&lt;version&gt;_linux_amd64.deb</code> and the arm64
+                  and <code>.rpm</code> equivalents, for systems that expect
+                  packages to come from the package manager. Installs to{" "}
+                  <code>/usr/share/brw/</code>.
+                </p>
+              </div>
+
+              <div className="install-route">
+                <p className="install-route-head">
+                  <span className="install-badge install-badge-soon">
+                    windows
+                  </span>
+                  .msi
+                </p>
+                <p>
+                  <code>brw_&lt;version&gt;_windows_amd64.msi</code> and an
+                  arm64 build. Puts the brw commands on PATH and the extension,
+                  tests and licence under{" "}
+                  <code>C:\Program Files\brw\share\</code>.
+                </p>
+              </div>
+            </div>
+
+            <div className="install-after">
+              <div className="install-route">
+                <p className="install-route-head">
+                  <span className="install-badge">then</span>
+                  Connect a browser
+                </p>
+                <p>
+                  The bridge drives a browser you are already signed into, so it
+                  needs the brw extension loaded in that browser. One permanent
+                  extension id, trusted by the daemon with no configuration:
+                </p>
+                <p className="install-id">
+                  <code>{extensionId}</code>
+                </p>
+                <ul className="steps">
+                  <li>
+                    <strong>Chromium:</strong> drop one policy file and it
+                    force-installs from brw&apos;s self-hosted{" "}
+                    <a href="/brw.crx" target="_blank" rel="noopener noreferrer">
+                      package
+                    </a>{" "}
+                    and{" "}
+                    <a
+                      href="/updates.xml"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      update manifest
+                    </a>
+                    , then auto-updates. Linux needs no MDM:{" "}
+                    <a
+                      href="/policies/brw-chromium-policy.json"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      policy JSON
+                    </a>{" "}
+                    into <code>/etc/chromium/policies/managed/</code>. macOS uses
+                    a{" "}
+                    <a
+                      href="/policies/brw-chromium.mobileconfig"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      configuration profile
+                    </a>
+                    , Windows a{" "}
+                    <a
+                      href="/policies/brw-chromium-policy.reg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      .reg file
+                    </a>{" "}
+                    or the matching GPO.
+                  </li>
+                  <li>
+                    <strong>Chrome:</strong> load unpacked today.{" "}
+                    <code>chrome://extensions</code> &rarr; Developer mode &rarr;
+                    Load unpacked &rarr; the <code>extension/</code> folder.
+                    {chromeStoreUrl ? (
+                      <>
+                        {" "}
+                        Or install it in one click from the{" "}
+                        <Link
+                          href={chromeStoreUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Chrome Web Store
+                        </Link>
+                        .
+                      </>
+                    ) : (
+                      " A Chrome Web Store build is being prepared for review. No listing exists yet, so load-unpacked is the Chrome path until one does."
+                    )}
+                  </li>
+                  <li>
+                    Either way, open the extension&apos;s Options page and click{" "}
+                    <strong>Enable local browser control</strong>. It attempts no
+                    connection before you do. What it handles, and what it
+                    refuses, is in the{" "}
+                    <Link href="/privacy/extension">
+                      extension privacy policy
+                    </Link>
+                    .
+                  </li>
+                </ul>
+              </div>
+
               <pre className="codeblock">
                 <code>
-                  <span className="cmt"># after installing from a release</span>
-                  {"\n"}
-                  <span className="cmt"># run as an MCP server over stdio</span>
-                  {"\n"}
-                  <span className="prompt">$ </span>brwd --mcp --http off
-                  {"\n"}
-                  {"\n"}
-                  <span className="cmt"># or expose the HTTP API on loopback</span>
-                  {"\n"}
-                  <span className="prompt">$ </span>brwd --http 127.0.0.1:17310
-                </code>
-              </pre>
-              <pre className="codeblock">
-                <code>
-                  <span className="cmt"># open a page and read its controls</span>
+                  <span className="cmt"># check it end to end</span>
                   {"\n"}
                   <span className="prompt">$ </span>curl -s 127.0.0.1:17310/api/browser/open \
                   {"\n"}
@@ -702,12 +993,15 @@ export default async function HomePage() {
                   {"    "}-d &apos;{"{"}&quot;url&quot;:&quot;https://example.com&quot;{"}"}&apos;
                   {"\n"}
                   {"\n"}
+                  <span className="cmt"># a visible tab opened; read its controls</span>
+                  {"\n"}
                   <span className="prompt">$ </span>curl -s 127.0.0.1:17310/api/page/snapshot | jq
                 </code>
               </pre>
+
               <pre className="codeblock">
                 <code>
-                  <span className="cmt"># source build if you need it</span>
+                  <span className="cmt"># build from source instead</span>
                   {"\n"}
                   <span className="prompt">$ </span>git clone https://github.com/Don-Works/brw.git
                   {"\n"}
@@ -717,156 +1011,138 @@ export default async function HomePage() {
                 </code>
               </pre>
             </div>
+
+            <p className="feature-footnote">
+              Remote browsers, multi-profile policies and SSH-first setups are in
+              the{" "}
+              <Link href={brwInstallDocsUrl} target="_blank" rel="noopener noreferrer">
+                install docs
+              </Link>
+              .
+            </p>
           </div>
         </section>
 
-        <section id="install" className="section section-alt">
-          <div className="section-inner split-layout">
-            <div className="section-header section-header-sticky">
-              <p className="section-kicker">install</p>
-              <h2>Daemon first, Chromium bridge when you need real profile auth</h2>
+        <section id="transports" className="section section-alt">
+          <div className="section-inner">
+            <div className="section-header">
+              <p className="section-kicker">transports</p>
+              <h2>Two ways brw reaches a browser</h2>
               <p>
-                Start with a native brw installer from GitHub releases. The
-                extension is only needed when you want the daemon to bridge into
-                an already-signed-in Chrome or Chromium profile over{" "}
-                <code>ws://127.0.0.1</code>.
-              </p>
-              <p>
-                brw is open source — and so is{" "}
-                <a
-                  href="https://www.chromium.org/Home"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Chromium
-                </a>
-                , so it&apos;s what we champion. On Chromium you force-install
-                the extension and get auto-updates from a single policy file
-                pointed at brw&apos;s own update server — no Chrome Web Store,
-                no review queue, no gatekeeping. It works on Chrome too.
-              </p>
-              <p>
-                One permanent extension ID, trusted by the daemon with zero
-                config:
-              </p>
-              <p className="install-id">
-                <code>{extensionId}</code>
+                The extension bridge drives the browser you already use. Direct
+                CDP drives a browser brw launches and owns. They differ in what
+                they can do, and each capability below exists on one of them. The
+                one-line installer sets up the bridge; add a direct-CDP profile
+                by running <code>brwd</code> without <code>--bridge</code>, and
+                run both side by side as separate namespaces.
               </p>
             </div>
-            <div className="stacked-panels">
-              <div className="install-route">
-                <p className="install-route-head">
-                  <span className="install-badge">daemon</span>
-                  Native package installers
-                </p>
-                <p>
-                  GitHub releases ship <code>.msi</code> for Windows, a
-                  universal macOS <code>.pkg</code>, and Linux <code>.deb</code>
-                  / <code>.rpm</code> packages. They put the brw commands on
-                  PATH and install the extension, tests, README, and licence
-                  into the platform share directory.
-                </p>
-                <Link
-                  href={brwReleasesUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="button button-secondary"
-                >
-                  <Github aria-hidden="true" />
-                  Download from releases
-                </Link>
-              </div>
-              <div className="install-route">
-                <p className="install-route-head">
-                  <span className="install-badge">recommended</span>
-                  Chromium — force-install + auto-update
-                </p>
-                <p>
-                  Point Chromium at brw&apos;s self-hosted{" "}
-                  <a href="/updates.xml" target="_blank" rel="noopener noreferrer">
-                    update manifest
-                  </a>
-                  . It installs the signed{" "}
-                  <a href="/brw.crx" target="_blank" rel="noopener noreferrer">
-                    package
-                  </a>{" "}
-                  and keeps it current automatically. Drop one policy file for
-                  your platform:
-                </p>
-                <ul className="steps">
-                  <li>
-                    <strong>Linux:</strong> save{" "}
-                    <a href="/policies/brw-chromium-policy.json" target="_blank" rel="noopener noreferrer">
-                      the policy JSON
-                    </a>{" "}
-                    to <code>/etc/chromium/policies/managed/</code> — no MDM
-                    needed.
-                  </li>
-                  <li>
-                    <strong>macOS:</strong> install the{" "}
-                    <a href="/policies/brw-chromium.mobileconfig" target="_blank" rel="noopener noreferrer">
-                      configuration profile
-                    </a>{" "}
-                    (or push it via MDM).
-                  </li>
-                  <li>
-                    <strong>Windows:</strong> import{" "}
-                    <a href="/policies/brw-chromium-policy.reg" target="_blank" rel="noopener noreferrer">
-                      the .reg file
-                    </a>{" "}
-                    (or set the matching GPO).
-                  </li>
-                </ul>
-                <p>
-                  No policy at all? On Chromium, <code>brwd</code> can launch the
-                  browser with the extension already loaded —{" "}
-                  <code>--load-extension</code> still works on Chromium (Chrome
-                  137+ dropped it), so there is nothing to click.
-                </p>
-              </div>
-              <div className="install-route">
-                <p className="install-route-head">
-                  <span className="install-badge install-badge-soon">
-                    also works
-                  </span>
-                  Chrome — load unpacked
-                </p>
-                <ol className="steps">
-                  <li>
-                    Run <code>make install-extension</code> (or open{" "}
-                    <code>chrome://extensions</code>).
-                  </li>
-                  <li>
-                    Turn on <strong>Developer mode</strong>, click{" "}
-                    <strong>Load unpacked</strong>, choose the{" "}
-                    <code>extension/</code> folder.
-                  </li>
-                  <li>
-                    Run <code>brwd --bridge</code> and brw is on your real
-                    browser.
-                  </li>
-                </ol>
-                {chromeStoreUrl ? (
-                  <p>
-                    Or one-click from the{" "}
-                    <Link
-                      href={chromeStoreUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Chrome Web Store
-                    </Link>
-                    .
-                  </p>
-                ) : (
-                  <p>
-                    A one-click Chrome Web Store build is being prepared for
-                    review; until it lands, load-unpacked installs the same
-                    extension from source.
-                  </p>
-                )}
-              </div>
+
+            <div
+              className="comparison-wrap transport-wrap"
+              tabIndex={0}
+              role="region"
+              aria-label="Transport capability comparison"
+            >
+              <table className="comparison-table transport-table">
+                <caption className="sr-only">
+                  Capabilities of the brw extension bridge compared with the
+                  direct-CDP transport
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Capability</th>
+                    <th scope="col" className="brw-column">
+                      Extension bridge
+                    </th>
+                    <th scope="col">Direct CDP</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transportRows.map((row) => (
+                    <tr key={row.label}>
+                      <th scope="row">{row.label}</th>
+                      <td className="brw-column" data-lane="Extension bridge">
+                        {row.bridge}
+                      </td>
+                      <td data-lane="Direct CDP">{row.direct}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
+            <p className="comparison-note">
+              <code>brw_identity</code> reports which transport a namespace is
+              on, so an agent can check before it assumes a capability.{" "}
+              <Link href={brwAuthModelUrl} target="_blank" rel="noopener noreferrer">
+                Read the auth model
+              </Link>
+              .
+            </p>
+          </div>
+        </section>
+
+        <section id="trust" className="section">
+          <div className="section-inner">
+            <div className="section-header">
+              <p className="section-kicker">trust</p>
+              <h2>What you can check before you run it</h2>
+              <p>
+                brw is young and small, and it asks for control of a browser you
+                are signed into. Here is what is verifiable about a release
+                today, and what is not yet.
+              </p>
+            </div>
+            <div className="capability-grid">
+              {trustGroups.map(({ icon: Icon, ...group }) => (
+                <article key={group.title} className="capability-panel">
+                  <div className="panel-topline">
+                    <span>{group.label}</span>
+                    <Icon aria-hidden="true" />
+                  </div>
+                  <h3>{group.title}</h3>
+                  <p>{group.body}</p>
+                  <ul>
+                    {group.items.map((item) => (
+                      <li key={item}>
+                        <Check aria-hidden="true" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+
+            <pre className="codeblock trust-commands">
+              <code>
+                <span className="cmt"># the file matches the release</span>
+                {"\n"}
+                <span className="prompt">$ </span>shasum -a 256 -c SHA256SUMS.txt
+                {"\n"}
+                {"\n"}
+                <span className="cmt"># the release came from this repository&apos;s workflow</span>
+                {"\n"}
+                <span className="prompt">$ </span>gh attestation verify brw_&lt;version&gt;_macos_universal.pkg \
+                {"\n"}
+                {"    "}--repo Don-Works/brw
+              </code>
+            </pre>
+            <p className="comparison-note">
+              Both checks run against artifacts from the{" "}
+              <Link href={brwReleasesUrl} target="_blank" rel="noopener noreferrer">
+                releases page
+              </Link>
+              . The workflow that produces and attests them is{" "}
+              <Link
+                href={brwReleaseWorkflowUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                in the repository
+              </Link>
+              .
+            </p>
           </div>
         </section>
 
@@ -881,7 +1157,11 @@ export default async function HomePage() {
                 MFA bypass, fraud-check bypass or consent bypass. The
                 installed-profile extension refuses HttpOnly cookie and bulk
                 storage access; explicit cookie tools exist only for dedicated
-                direct-CDP profiles. Browser-control HTTP binds to loopback by
+                direct-CDP profiles, and the{" "}
+                <Link href="/privacy/extension">
+                  extension privacy policy
+                </Link>{" "}
+                lists every refusal. Browser-control HTTP binds to loopback by
                 default, recipes declare their risk, and mutating requests are
                 guarded. For remote use, prefer stdio MCP over SSH so the profile
                 stays on the machine that owns it. Released under AGPL-3.0 — free

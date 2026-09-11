@@ -9,18 +9,32 @@
   --color-border-hot: #ff2ec4;
   --color-text: #edf2e6;
   --color-text-muted: #ad9ba8;
-  --color-text-dim: #72606d;
+  /* 5.09:1 on --color-bg, 4.51:1 on the lightest surface. #72606d was 3.49:1. */
+  --color-text-dim: #8d7a87;
   --color-magenta: #ff2ec4;
   --color-magenta-soft: #ff8fe0;
   --color-cyan: #2ea4e0;
   --color-cyan-soft: #8fd6ff;
   --color-red: #ff3147;
   --color-ivory: #edf2e6;
+  --color-focus: #8fd6ff;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* One focus ring for the whole site. Components restyle :focus-visible with
+   colour changes that are easy to miss, so every one of them also draws this. */
+:root {
+  --focus-ring: 2px solid var(--color-focus);
+  --focus-ring-offset: 2px;
 }
 
 * {
   box-sizing: border-box;
+}
+
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 html {
@@ -129,7 +143,11 @@ a {
   border-color: color-mix(in srgb, var(--color-magenta) 35%, transparent);
   background: color-mix(in srgb, var(--color-magenta) 8%, transparent);
   color: var(--color-magenta);
-  outline: none;
+}
+
+.main-nav a:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .hero-section {
@@ -404,7 +422,11 @@ a {
 .button-primary:hover,
 .button-primary:focus-visible {
   background: var(--color-magenta-soft);
-  outline: none;
+}
+
+.button-primary:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .button-secondary {
@@ -418,7 +440,11 @@ a {
   border-color: var(--color-magenta);
   background: color-mix(in srgb, var(--color-magenta) 10%, transparent);
   box-shadow: inset 0 0 18px color-mix(in srgb, var(--color-magenta) 10%, transparent);
-  outline: none;
+}
+
+.button-secondary:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* code block — quickstart / commands */
@@ -595,7 +621,28 @@ a {
 .comparison-note a:focus-visible {
   color: var(--color-magenta-soft);
   text-decoration: underline;
-  outline: none;
+}
+
+.text-link:focus-visible,
+.benchmark-note a:focus-visible,
+.comparison-note a:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* prose links elsewhere in a section were distinguished by nothing at all */
+.section-header p a,
+.closing-shell p a,
+.feature-footnote a {
+  color: var(--color-magenta);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.section-header p a:hover,
+.closing-shell p a:hover,
+.feature-footnote a:hover {
+  color: var(--color-magenta-soft);
 }
 
 /* recipes — the product's repeatable-work differentiator */
@@ -928,6 +975,78 @@ a {
   border-bottom: 0;
 }
 
+/* Both lanes must be readable on a phone. A horizontal scroller hides the
+   second column entirely, and a reader who never scrolls concludes that half
+   these capabilities do not exist — so below 760px each row becomes a card
+   with both lanes labelled and stacked. */
+@media (max-width: 759px) {
+  .transport-wrap {
+    overflow-x: visible;
+    border: 0;
+  }
+
+  .transport-table {
+    min-width: 0;
+    background: transparent;
+  }
+
+  .transport-table thead {
+    display: none;
+  }
+
+  .transport-table,
+  .transport-table tbody,
+  .transport-table tr,
+  .transport-table th,
+  .transport-table td {
+    display: block;
+    width: auto;
+  }
+
+  .transport-table tbody tr {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    padding: 0.95rem 1rem;
+  }
+
+  .transport-table tbody tr + tr {
+    margin-top: 0.85rem;
+  }
+
+  .transport-table tbody th,
+  .transport-table tbody td,
+  .transport-table tbody tr:last-child th,
+  .transport-table tbody tr:last-child td {
+    border-bottom: 0;
+    padding: 0;
+  }
+
+  .transport-table tbody th {
+    width: auto;
+    margin-bottom: 0.75rem;
+    color: var(--color-text);
+  }
+
+  .transport-table tbody td {
+    width: auto;
+    background: transparent;
+  }
+
+  .transport-table tbody td + td {
+    margin-top: 0.75rem;
+  }
+
+  .transport-table tbody td::before {
+    content: attr(data-lane);
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--color-magenta);
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+}
+
 .comparison-note {
   margin: 0.9rem 0 0;
 }
@@ -935,6 +1054,7 @@ a {
 /* install section — extension ID + the two install routes */
 .install-id {
   margin-top: 0.85rem;
+  margin-bottom: 1.1rem;
 }
 
 .install-id code {
@@ -956,6 +1076,7 @@ a {
 
 .install-route-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.6rem;
   margin: 0 0 0.9rem;
@@ -993,8 +1114,33 @@ a {
   line-height: 1.55;
 }
 
+ul.steps {
+  list-style: disc;
+}
+
+ol.steps {
+  list-style: decimal;
+}
+
 .steps li {
   padding-left: 0.25rem;
+}
+
+.steps li::marker {
+  color: var(--color-magenta);
+}
+
+/* links inside install copy are otherwise indistinguishable from the text */
+.install-route a:not(.button),
+.steps a {
+  color: var(--color-magenta);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.install-route a:not(.button):hover,
+.steps a:hover {
+  color: var(--color-magenta-soft);
 }
 
 .steps code,
@@ -1004,6 +1150,64 @@ a {
 
 .install-route .button {
   margin-top: 1rem;
+}
+
+/* the one-line installer — the front door, so it gets the hot border */
+.install-lead {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-magenta) 52%, var(--color-border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-magenta) 8%, transparent), transparent 55%),
+    var(--color-surface);
+}
+
+.install-lead .install-route-head {
+  margin: 0;
+}
+
+.codeblock-lead {
+  border-color: var(--color-magenta);
+  padding: 0.9rem 0.95rem;
+}
+
+/* the command wraps rather than hiding in a horizontal scroller on a phone */
+.codeblock-lead code {
+  font-size: clamp(0.72rem, 2.7vw, 1rem);
+  font-weight: 700;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.install-lead-note {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+.install-routes {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  margin-top: 1.6rem;
+}
+
+.install-routes .install-route + .install-route {
+  margin-top: 0;
+}
+
+.install-after {
+  margin-top: 1.6rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.trust-commands {
+  margin-top: 1.6rem;
 }
 
 /* legal / privacy page */
@@ -1043,6 +1247,12 @@ a {
   color: var(--color-text);
 }
 
+.legal h3 {
+  margin: 1.4rem 0 0.5rem;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
 .legal-updated {
   color: var(--color-text-dim);
   font-size: 0.85rem;
@@ -1055,14 +1265,21 @@ a {
   margin: 0 0 0.9rem;
 }
 
+/* preflight strips markers; a policy list without them reads as loose paragraphs */
 .legal ul {
   margin: 0 0 0.9rem;
   padding-left: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  list-style: disc;
   color: var(--color-text-muted);
   line-height: 1.6;
+}
+
+.legal li + li {
+  margin-top: 0.5rem;
+}
+
+.legal li::marker {
+  color: var(--color-magenta);
 }
 
 .legal code {
@@ -1071,6 +1288,8 @@ a {
 
 .legal a {
   color: var(--color-magenta);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
 }
 
 .legal a:hover {
@@ -1253,7 +1472,11 @@ a {
 .footer-nav a:hover,
 .footer-nav a:focus-visible {
   color: var(--color-text);
-  outline: none;
+}
+
+.footer-nav a:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .footer-bottom {
@@ -1303,6 +1526,18 @@ a {
 
   .capability-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .install-routes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .install-lead {
+    padding: 1.4rem;
+  }
+
+  .codeblock-lead {
+    padding: 1.15rem 1.2rem;
   }
 
   .closing-shell {
