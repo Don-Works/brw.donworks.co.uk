@@ -8,10 +8,16 @@
 # byte-for-byte before brw-site is deployed.
 #
 # To replace it:   cp <brw>/scripts/install.sh brw-site/public/install.sh
+# Canonical source: Don-Works/brw, scripts/install.sh
 #
-# Until then this script refuses to install anything and points at the signed
-# release artifacts instead, so that a reader who pipes the URL into `sh`
-# before the swap gets a clear instruction rather than a partial install.
+# The real installer downloads brw_<version>_<os>_<arch>.tar.gz from the latest
+# GitHub release. Releases up to v0.10.3 publish no tarballs, so it has nothing
+# to fetch until the first release whose workflow builds them. Do not swap this
+# placeholder out before that release exists.
+#
+# Until then this script refuses to install anything and points at the release
+# artifacts instead, so that a reader who pipes the URL into `sh` before the
+# swap gets a clear instruction rather than a partial install.
 # =============================================================================
 
 set -eu

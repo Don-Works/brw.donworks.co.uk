@@ -316,23 +316,23 @@ const trustGroups: CapabilityGroup[] = [
   {
     label: "provenance",
     title: "Every artifact is attested",
-    body: "A checksum proves a file matches the release. An attestation proves what built the release.",
+    body: "A checksum proves a file matches the release. An attestation proves which workflow and which commit built it.",
     icon: BadgeCheck,
     items: [
       "GitHub build-provenance attestation is generated for every release artifact",
-      "SHA256SUMS.txt covers every installer in the release",
-      "A CycloneDX SBOM ships alongside them as brw_<version>_sbom.cdx.json",
+      "SHA256SUMS.txt covers every installer, and install.sh checks both before it writes anything",
+      "Verifying needs gh 2.49 or newer, signed in — the bundle comes from the GitHub API",
     ],
   },
   {
     label: "signing",
-    title: "Developer ID and Authenticode are landing",
-    body: "Neither is in a published release yet. Both land in the next one.",
+    title: "Code signing is not in place",
+    body: "No release artifact carries a platform code-signing signature today, on any operating system.",
     icon: Signature,
     items: [
-      "macOS: Developer ID signing and notarisation for the .pkg",
-      "Windows: Authenticode signing for the .msi",
-      "Until then, the attestation is the check that identifies the builder",
+      "macOS packages are unsigned and not notarised; Windows packages carry no Authenticode signature",
+      "Linux .deb and .rpm are unsigned — there is no distribution GPG key to check them against",
+      "The signing pipeline is written and switches on when certificates are bought. No date is set",
     ],
   },
   {
@@ -799,45 +799,38 @@ export default async function HomePage() {
               </p>
               <ol className="steps">
                 <li>
-                  Puts <code>brwd</code>, <code>brwctl</code>,{" "}
-                  <code>brwcheck</code> and <code>brw-devtools-mcp</code> under
-                  your home directory. No <code>sudo</code>, nothing written
-                  outside it.
+                  Detects your platform, resolves the version and prints the
+                  whole plan — archive name, source URL, install directory —
+                  before it downloads anything.
                 </li>
                 <li>
-                  Runs <code>brwctl setup</code>: the bridge daemon starts in
-                  the background, brw is registered with your MCP client, and
-                  the bundled agent skill is installed.
+                  Verifies the archive&apos;s SHA-256 and its GitHub
+                  build-provenance attestation. A mismatch aborts before
+                  anything is written to disk.
                 </li>
                 <li>
-                  Leaves you one step — connecting a browser, below. Everything
-                  else is done.
+                  Installs under{" "}
+                  <code>~/Library/Application Support/brw</code> on macOS or{" "}
+                  <code>~/.local/share/brw</code> on Linux, and symlinks{" "}
+                  <code>brwd</code>, <code>brwctl</code>, <code>brwcheck</code>{" "}
+                  and <code>brw-devtools-mcp</code> into{" "}
+                  <code>~/.local/bin</code>. No <code>sudo</code>, nothing
+                  outside your home directory.
+                </li>
+                <li>
+                  Runs <code>brwctl setup</code>.
                 </li>
               </ol>
+              <p className="install-lead-note">
+                It reads no input, which is what makes the pipe safe.{" "}
+                <code>BRW_VERSION</code>, <code>BRW_INSTALL_DIR</code>,{" "}
+                <code>BRW_BIN_DIR</code>, <code>BRW_BASE_URL</code>,{" "}
+                <code>BRW_NO_SETUP</code> and <code>BRW_SKIP_ATTESTATION</code>{" "}
+                change what it does.
+              </p>
             </div>
 
             <div className="install-routes">
-              <div className="install-route">
-                <p className="install-route-head">
-                  <span className="install-badge install-badge-soon">
-                    homebrew
-                  </span>
-                  macOS and Linux
-                </p>
-                <p>
-                  The tap ships the same binaries and keeps them updated with
-                  the rest of your formulae. Run <code>brwctl setup</code>{" "}
-                  afterwards to do what the installer would have done.
-                </p>
-                <pre className="codeblock">
-                  <code>
-                    <span className="prompt">$ </span>brew install don-works/tap/brw
-                    {"\n"}
-                    <span className="prompt">$ </span>brwctl setup
-                  </code>
-                </pre>
-              </div>
-
               <div className="install-route">
                 <p className="install-route-head">
                   <span className="install-badge install-badge-soon">
@@ -895,13 +888,64 @@ export default async function HomePage() {
             <div className="install-after">
               <div className="install-route">
                 <p className="install-route-head">
+                  <span className="install-badge">setup</span>
+                  What brwctl setup does
+                </p>
+                <p>
+                  Inside the pipe it is non-interactive: it prints the plan,
+                  performs it and exits. On a terminal it asks first.{" "}
+                  <code>brwctl setup --dry-run</code> lists every action without
+                  performing one. Nothing it writes is outside your home
+                  directory and no step uses <code>sudo</code>.
+                </p>
+                <ul className="steps">
+                  <li>
+                    Writes a browser profile policy at{" "}
+                    <code>~/.config/brw/browser-profiles.json</code>, merging
+                    into an existing one rather than replacing it.
+                  </li>
+                  <li>
+                    Installs a background daemon for your platform — a
+                    LaunchAgent on macOS, a systemd user unit on Linux, a logon
+                    task on Windows — bound to <code>127.0.0.1:17310</code> for
+                    control and <code>127.0.0.1:17311</code> for the bridge. If
+                    a service already drives that profile or holds those ports,
+                    it reports what it found and writes nothing.
+                  </li>
+                  <li>
+                    Registers brw with Claude Code through{" "}
+                    <code>claude mcp add</code>. <code>--mcp-client codex</code>{" "}
+                    or <code>both</code> covers Codex;{" "}
+                    <code>--mcp-client none</code> prints the{" "}
+                    <code>mcpServers</code> block for you to paste.
+                  </li>
+                  <li>
+                    Installs the bundled agent skill into{" "}
+                    <code>~/.claude/skills/brw</code>,{" "}
+                    <code>~/.agents/skills/brw</code> and{" "}
+                    <code>~/.codex/skills/brw</code>.
+                  </li>
+                  <li>
+                    On macOS, turns off App Nap for the browser so a
+                    backgrounded window does not drop the bridge.
+                  </li>
+                  <li>
+                    Runs the doctor check and prints what is left for you to do.
+                  </li>
+                </ul>
+              </div>
+
+              <div className="install-route">
+                <p className="install-route-head">
                   <span className="install-badge">then</span>
                   Connect a browser
                 </p>
                 <p>
-                  The bridge drives a browser you are already signed into, so it
-                  needs the brw extension loaded in that browser. One permanent
-                  extension id, trusted by the daemon with no configuration:
+                  Loading the extension is the one step <code>brwctl setup</code>{" "}
+                  cannot do for you. The bridge drives a browser you are already
+                  signed into, so that browser needs the brw extension. One
+                  permanent extension id, trusted by the daemon with no
+                  configuration:
                 </p>
                 <p className="install-id">
                   <code>{extensionId}</code>
@@ -984,7 +1028,20 @@ export default async function HomePage() {
 
               <pre className="codeblock">
                 <code>
-                  <span className="cmt"># check it end to end</span>
+                  <span className="cmt"># setup prints this line with your workspace filled in</span>
+                  {"\n"}
+                  <span className="prompt">$ </span>brwctl doctor --workspace brw-chrome-profile
+                  {"\n"}
+                  {"\n"}
+                  <span className="cmt"># before the extension is loaded and the browser restarted,</span>
+                  {"\n"}
+                  <span className="cmt"># doctor reports it missing and exits non-zero. That is expected.</span>
+                </code>
+              </pre>
+
+              <pre className="codeblock">
+                <code>
+                  <span className="cmt"># then check it end to end</span>
                   {"\n"}
                   <span className="prompt">$ </span>curl -s 127.0.0.1:17310/api/browser/open \
                   {"\n"}
@@ -1032,9 +1089,9 @@ export default async function HomePage() {
                 The extension bridge drives the browser you already use. Direct
                 CDP drives a browser brw launches and owns. They differ in what
                 they can do, and each capability below exists on one of them. The
-                one-line installer sets up the bridge; add a direct-CDP profile
-                by running <code>brwd</code> without <code>--bridge</code>, and
-                run both side by side as separate namespaces.
+                one-line installer sets up the bridge; add the other lane with{" "}
+                <code>brwctl setup --transport direct-cdp</code>, and run both
+                side by side as separate namespaces.
               </p>
             </div>
 
