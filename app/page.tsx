@@ -925,7 +925,9 @@ export default async function HomePage() {
                 <ul className="steps">
                   <li>
                     Writes a browser profile policy at{" "}
-                    <code>~/.config/brw/browser-profiles.json</code>, merging
+                    <code>~/Library/Application Support/brw/browser-profiles.json</code> on
+                    macOS and <code>~/.config/brw/browser-profiles.json</code> on
+                    Linux, merging
                     into an existing one rather than replacing it.
                   </li>
                   <li>
