@@ -174,7 +174,7 @@ const why: PanelItem[] = [
   {
     label: "your auth",
     title: "Your real browser logins",
-    body: "Bridges to the installed, signed-in Chrome or Chromium you already use — or Edge, Brave, Vivaldi, Opera or Arc. The sites you're logged into, brw is too, and cookies and sessions stay on your machine.",
+    body: "Bridges to the installed, signed-in browser you already use — Chrome, Chromium, Edge, Brave, Vivaldi, Opera or Arc. The sites you're logged into, brw is too, and cookies and sessions stay on your machine.",
     icon: KeyRound,
     cta: {
       label: "Bind profiles to workspaces with MCPlexer →",
