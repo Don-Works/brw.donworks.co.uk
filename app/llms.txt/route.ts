@@ -76,7 +76,7 @@ export function GET() {
       "",
       "## Transports",
       "",
-      "Two lanes, with different capabilities. Extension bridge: drives the user's installed, signed-in Chrome or Chromium; gets Chrome tab groups; has no incognito, no HttpOnly cookie access and no download routing; started with `brwd --bridge`. Direct CDP: drives a separate browser instance on a profile brw owns; gets incognito contexts (`brw_open_incognito`), cookie tools (`brw_cookies`, HttpOnly included), deterministic download staging and headless; started with `brwd --mcp --http off`. The one-line installer sets up the bridge; `brwctl setup --transport direct-cdp` adds the other lane. `brw_identity` reports which transport a namespace is on.",
+      "Two lanes, with different capabilities. Extension bridge: drives the user's installed, signed-in Chromium-based browser (Chrome, Chromium, Edge, Brave, Vivaldi, Opera or Arc by name, any other Chromium build via `--browser <name> --user-data-dir <path>`); gets Chrome tab groups; has no incognito, no HttpOnly cookie access and no download routing; started with `brwd --bridge`. Direct CDP: drives a separate browser instance on a profile brw owns; gets incognito contexts (`brw_open_incognito`), cookie tools (`brw_cookies`, HttpOnly included), deterministic download staging and headless; started with `brwd --mcp --http off`. The one-line installer sets up the bridge; `brwctl setup --transport direct-cdp` adds the other lane. `brw_identity` reports which transport a namespace is on.",
       "",
       "## Trust and provenance",
       "",

@@ -174,7 +174,7 @@ const why: PanelItem[] = [
   {
     label: "your auth",
     title: "Your real browser logins",
-    body: "Bridges to your installed, signed-in Chrome or Chromium. The sites you're logged into, brw is too — cookies and sessions stay on your machine.",
+    body: "Bridges to the installed, signed-in Chrome or Chromium you already use — or Edge, Brave, Vivaldi, Opera or Arc. The sites you're logged into, brw is too, and cookies and sessions stay on your machine.",
     icon: KeyRound,
     cta: {
       label: "Bind profiles to workspaces with MCPlexer →",
@@ -219,7 +219,7 @@ const comparisonRows = [
   },
   {
     label: "Browser support",
-    brw: "Chrome and Chromium; local or on a remote browser host over SSH.",
+    brw: "Chrome and Chromium, plus Edge, Brave, Vivaldi, Opera and Arc — any Chromium build, named with one flag. Local, or a remote browser host over SSH.",
     claude: "Google Chrome; other Chromium browsers are not supported.",
   },
   {
@@ -257,8 +257,8 @@ const comparisonRows = [
 const transportRows = [
   {
     label: "The browser it drives",
-    bridge: "The Chrome or Chromium you already have open and signed in.",
-    direct: "A separate Chrome or Chromium that brw launches, on a profile brw owns.",
+    bridge: "The Chrome, Chromium, Edge, Brave, Vivaldi, Opera or Arc you already have open and signed in.",
+    direct: "A separate Chromium browser that brw launches, on a profile brw owns.",
   },
   {
     label: "Where the logins come from",
