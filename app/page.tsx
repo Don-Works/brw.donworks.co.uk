@@ -833,6 +833,30 @@ export default async function HomePage() {
             <div className="install-routes">
               <div className="install-route">
                 <p className="install-route-head">
+                  <span className="install-badge">homebrew</span>
+                  macOS and Linux
+                </p>
+                <p>
+                  <code>brew install don-works/tap/brw</code> installs the same
+                  tree into the formula prefix, which is then the app directory:{" "}
+                  <code>brwctl doctor --app-dir &quot;$(brew --prefix brw)&quot;</code>.
+                  Run <code>brwctl setup</code> afterwards. The tap is bumped by
+                  the release workflow, so <code>brew upgrade</code> tracks
+                  releases.
+                </p>
+                <Link
+                  href="https://github.com/Don-Works/homebrew-tap"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="button button-secondary"
+                >
+                  <Github aria-hidden="true" />
+                  Open the tap
+                </Link>
+              </div>
+
+              <div className="install-route">
+                <p className="install-route-head">
                   <span className="install-badge install-badge-soon">
                     macOS pkg
                   </span>
