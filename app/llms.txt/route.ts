@@ -8,7 +8,7 @@ export function GET() {
       "- Site: https://brw.donworks.co.uk",
       "- Source: https://github.com/Don-Works/brw",
       "- Umbrella: https://donworks.co.uk (Don Works, open source by Revitt)",
-      "- Siblings: https://github.com/Don-Works/mcplexer, https://github.com/Don-Works/resident, https://github.com/Don-Works/handler",
+      "- Siblings: https://github.com/Don-Works/resident, https://github.com/Don-Works/handler",
       "- Parent: https://revitt.co",
       "- Licence: AGPL-3.0",
       "",

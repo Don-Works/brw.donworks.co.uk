@@ -65,10 +65,6 @@ const chromeStoreUrl = "";
 const donworksSite =
   "https://donworks.co.uk/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source";
 const donworksGithub = "https://github.com/Don-Works";
-const mcplexerUrl =
-  "https://mcplexer.com/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source";
-const mcplexerWorkspacesUrl =
-  "https://mcplexer.com/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source&utm_content=why_chrome_logins#workspaces";
 const revittUrl =
   "https://revitt.co/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source";
 const residentUrl =
@@ -176,10 +172,6 @@ const why: PanelItem[] = [
     title: "Your real browser logins",
     body: "Bridges to the installed, signed-in browser you already use — Chrome, Chromium, Edge, Brave, Vivaldi, Opera or Arc. The sites you're logged into, brw is too, and cookies and sessions stay on your machine.",
     icon: KeyRound,
-    cta: {
-      label: "Bind profiles to workspaces with MCPlexer →",
-      href: mcplexerWorkspacesUrl,
-    },
   },
 ];
 
@@ -404,7 +396,6 @@ const footerGroups = [
   {
     title: "Family",
     links: [
-      ["MCPlexer", mcplexerUrl],
       ["Resident", residentUrl],
       ["Handler", handlerUrl],
       ["Revitt", `${revittUrl}&utm_content=footer_revitt`],

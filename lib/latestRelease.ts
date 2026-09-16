@@ -5,7 +5,7 @@
 // error the version is empty and links fall back to the generic releases page, so
 // the page never breaks.
 //
-// Reusable pattern for mcplexer.com — point REPO at the other repo.
+// Reusable pattern for the other Don Works sites — point REPO at the other repo.
 
 const REPO = "Don-Works/brw";
 export const RELEASES_URL = `https://github.com/${REPO}/releases`;
