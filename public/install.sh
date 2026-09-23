@@ -23,7 +23,7 @@ set -eu
 #                         SHA256 check still runs
 
 REPO="Don-Works/brw"
-COMMANDS="brwd brwctl brwcheck brw-devtools-mcp"
+COMMANDS="brw brwd brwctl brwcheck brw-devtools-mcp"
 # Everything the archive owns. The install replaces exactly these names and
 # nothing else, so a re-run cannot reach config/ or a per-profile extension copy.
 PAYLOAD="bin extension tests skills doc"
@@ -258,6 +258,34 @@ for item in $PAYLOAD; do
 done
 if [ -f "$tmp_dir/bridge-defaults.json" ]; then
   cp "$tmp_dir/bridge-defaults.json" "$install_dir/extension/bridge-defaults.json"
+fi
+
+# A machine driving more than one browser profile has a per-profile extension
+# payload per profile, each loaded unpacked from its own directory and each
+# holding its own bridge endpoint and token. Refreshing only extension/ leaves
+# every one of those profiles running the previous extension after an upgrade,
+# with nothing to say so: the daemon moves, the browser does not. This is the
+# same refresh `task sync-installed-extensions` performs.
+synced=""
+for extdir in "$install_dir"/extension-*; do
+  [ -d "$extdir" ] || continue
+  [ -L "$extdir" ] && continue
+  if [ -f "$extdir/bridge-defaults.json" ]; then
+    cp "$extdir/bridge-defaults.json" "$tmp_dir/profile-bridge-defaults.json"
+  else
+    rm -f "$tmp_dir/profile-bridge-defaults.json"
+  fi
+  rm -rf -- "${extdir:?}"
+  cp -R "$install_dir/extension" "$extdir"
+  rm -f "$extdir/bridge-defaults.json"
+  if [ -f "$tmp_dir/profile-bridge-defaults.json" ]; then
+    cp "$tmp_dir/profile-bridge-defaults.json" "$extdir/bridge-defaults.json"
+  fi
+  synced="$synced $(basename "$extdir")"
+done
+if [ -n "$synced" ]; then
+  step "Refreshed the per-profile extension payloads:$synced"
+  info "Reload each one in the browser (chrome://extensions, Reload) or restart it."
 fi
 
 for cmd in $COMMANDS; do
