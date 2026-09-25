@@ -52,7 +52,7 @@ export const preferenceOrder: Surface[] = [
   {
     order: "1",
     name: "A WebMCP tool on the page",
-    body: "brw_open and navigations list the landed page's tools as page_tools. The agent calls one with brw_call_page_tool instead of clicking.",
+    body: "brw_open and navigations list the tools a page has already registered as page_tools. Many sites register theirs a moment after load, so brw_page_tools waits up to 2 s for them. The agent calls one with brw_call_page_tool instead of clicking.",
   },
   {
     order: "2",
