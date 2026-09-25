@@ -374,8 +374,8 @@ const agentWebCards = [
     body: "6.7–7.7 KB through the page tools, about 55 KB of snapshots through the form.",
   },
   {
-    value: "~1 s",
-    title: "Tool time, both paths",
+    value: "1.2–1.3 s",
+    title: "Tool time (WebMCP) vs 0.8–1.3 s (DOM)",
     body: "1.17–1.34 s through the page tools, 0.84–1.32 s through the form.",
   },
 ];

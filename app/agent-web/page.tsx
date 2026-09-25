@@ -262,11 +262,11 @@ export default function AgentWebPage() {
           </pre>
           <p>
             If you also answer <code>Accept: text/markdown</code> on the page&apos;s
-            own URL, send <code>Vary: Accept</code> and mark that response{" "}
-            <code>Cache-Control: private, no-store</code>. Some CDNs ignore{" "}
-            <code>Vary: Accept</code> when they cache, and would then serve the cached
-            markdown to browsers. A separate <code>.md</code> URL caches
-            normally.
+            own URL: on Vercel with Next.js, the <code>Vary: Accept</code> header
+            set by the route did not reach the response, so a browser cache
+            reused the markdown for the HTML URL. Serve Accept-negotiated
+            markdown with <code>Cache-Control: private, no-store</code>, or use a
+            separate <code>.md</code> URL.
           </p>
 
           <h3>Describe your API and MCP server</h3>

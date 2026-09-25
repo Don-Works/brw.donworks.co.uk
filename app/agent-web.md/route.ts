@@ -102,7 +102,7 @@ export function GET() {
     "",
     fence("html", headLinksExample),
     "",
-    "If you also answer `Accept: text/markdown` on the page's own URL, send `Vary: Accept` and mark that response `Cache-Control: private, no-store`. Some CDNs ignore `Vary: Accept` when they cache, and would then serve the cached markdown to browsers. A separate `.md` URL caches normally.",
+    "If you also answer `Accept: text/markdown` on the page's own URL: on Vercel with Next.js, the `Vary: Accept` header set by the route did not reach the response, so a browser cache reused the markdown for the HTML URL. Serve Accept-negotiated markdown with `Cache-Control: private, no-store`, or use a separate `.md` URL.",
     "",
     "### Describe your API and MCP server",
     "",
