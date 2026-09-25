@@ -94,6 +94,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={jetbrainsMono.variable}>
       <head>
+        <link rel="llms" type="text/plain" href="/llms.txt" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
