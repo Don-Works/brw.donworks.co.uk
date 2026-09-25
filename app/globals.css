@@ -1306,6 +1306,48 @@ ol.steps {
   color: var(--color-text-dim);
 }
 
+.agent-web .codeblock {
+  margin: 0.4rem 0 1.1rem;
+}
+
+.agent-web .codeblock code {
+  color: var(--color-text);
+  overflow-wrap: normal;
+}
+
+.agent-web .comparison-wrap {
+  margin: 0.4rem 0 0;
+}
+
+.agent-web .agent-web-after-table {
+  margin-top: 0.9rem;
+}
+
+.agent-web-table tbody th {
+  color: var(--color-magenta-soft);
+}
+
+.agent-web-order {
+  margin: 0 0 0.9rem;
+  padding-left: 1.4rem;
+  list-style: decimal;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.agent-web-order li + li {
+  margin-top: 0.5rem;
+}
+
+.agent-web-order li::marker {
+  color: var(--color-magenta);
+  font-weight: 800;
+}
+
+.agent-web-order strong {
+  color: var(--color-text);
+}
+
 .info-panel,
 .wide-panel {
   border: 1px solid var(--color-border);

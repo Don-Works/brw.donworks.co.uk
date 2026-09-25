@@ -83,7 +83,7 @@ const capabilityGroups: CapabilityGroup[] = [
       "Read prose, headings, links, forms, tables, Open Graph and JSON-LD",
       "Click, type, fill, select, press, scroll, hover, drag and upload",
       "Wait and assert visibility, text, values and navigation outcomes",
-      "Discover and call WebMCP tools exposed directly by compatible web apps",
+      "Discover and call a page's WebMCP tools, native or declarative, on every transport",
     ],
   },
   {
@@ -362,6 +362,24 @@ const trustGroups: CapabilityGroup[] = [
   },
 ];
 
+const agentWebCards = [
+  {
+    value: "3 vs 11",
+    title: "Tool calls",
+    body: "Page tools against clicking through the booking form to the same point. Each call is a model turn.",
+  },
+  {
+    value: "7 vs 55 KB",
+    title: "Returned to the agent",
+    body: "6.7–7.7 KB through the page tools, about 55 KB of snapshots through the form.",
+  },
+  {
+    value: "~1 s",
+    title: "Tool time, both paths",
+    body: "1.17–1.34 s through the page tools, 0.84–1.32 s through the form.",
+  },
+];
+
 const facts = [
   ["surface", "62 tools"],
   ["fast path", "2-call recipes"],
@@ -417,6 +435,7 @@ export default async function HomePage() {
         </Link>
         <nav className="main-nav" aria-label="Main navigation">
           <a href="#why">Why</a>
+          <a href="#agent-web">Agent web</a>
           <a href="#recipes">Recipes</a>
           <a href="#features">Features</a>
           <a href="#compare">Compare</a>
@@ -568,6 +587,40 @@ export default async function HomePage() {
                 </div>
               </article>
             </div>
+          </div>
+        </section>
+
+        <section id="agent-web" className="section">
+          <div className="section-inner">
+            <div className="section-header">
+              <p className="section-kicker">agent surfaces</p>
+              <h2>Use the site&apos;s agent surface before its human UI.</h2>
+              <p>
+                When a page registers WebMCP tools, or a site publishes an MCP
+                server, an API description, llms.txt or markdown, brw reports it
+                and the agent uses it before driving the DOM. Native{" "}
+                <code>document.modelContext</code> works on every transport,
+                including your own signed-in Chrome.
+              </p>
+            </div>
+            <div className="benchmark-grid" aria-label="Booking flow on revitt.co/book">
+              {agentWebCards.map((card) => (
+                <article key={card.title} className="benchmark-card">
+                  <strong>{card.value}</strong>
+                  <h3>{card.title}</h3>
+                  <p>{card.body}</p>
+                </article>
+              ))}
+            </div>
+            <p className="benchmark-note">
+              Reaching a bookable slot on revitt.co/book through its five WebMCP
+              tools, against driving the form: three runs each, brw 0.15.2, 25
+              September 2026. Tool time was similar; the saving is in model turns
+              and tokens.{" "}
+              <Link href="/agent-web">
+                What brw does, and how to make a site work this way →
+              </Link>
+            </p>
           </div>
         </section>
 
