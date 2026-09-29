@@ -16,7 +16,7 @@ const manifestUrl =
   "https://github.com/Don-Works/brw/blob/main/extension/manifest.json";
 const extensionId = "amocjcgddnoakjijfggdpnefdnboilpe";
 const revittUrl =
-  "https://revitt.co/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source&utm_content=extension_privacy";
+  "https://revitt.co/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=extension_privacy";
 
 const permissions: [string, string][] = [
   [

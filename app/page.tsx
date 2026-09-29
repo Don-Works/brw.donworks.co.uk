@@ -65,8 +65,8 @@ const chromeStoreUrl = "";
 const donworksSite =
   "https://donworks.co.uk/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source";
 const donworksGithub = "https://github.com/Don-Works";
-const revittUrl =
-  "https://revitt.co/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source";
+const revittUrl = (placement: string) =>
+  `https://revitt.co/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=${placement}`;
 const residentUrl =
   "https://github.com/Don-Works/resident?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source";
 const handlerUrl =
@@ -416,7 +416,7 @@ const footerGroups = [
     links: [
       ["Resident", residentUrl],
       ["Handler", handlerUrl],
-      ["Revitt", `${revittUrl}&utm_content=footer_revitt`],
+      ["Revitt", revittUrl("footer")],
     ],
   },
 ];
@@ -1295,7 +1295,7 @@ export default async function HomePage() {
                 to use, change and build on, with improvements shared back. If
                 that doesn&apos;t fit your business,{" "}
                 <Link
-                  href={`${revittUrl}&utm_content=safety_commercial`}
+                  href={revittUrl("safety_commercial")}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -1353,8 +1353,11 @@ export default async function HomePage() {
         <div className="footer-bottom">
           <span>brw.donworks.co.uk</span>
           <span>
-            <Link href="/privacy">Privacy</Link> · Open source by Revitt ·
-            AGPL-3.0
+            <Link href="/privacy">Privacy</Link> ·{" "}
+            <a href="#cookie-settings" data-cookie-settings="">
+              Cookie settings
+            </a>{" "}
+            · Open source by Revitt · AGPL-3.0
           </span>
         </div>
       </footer>

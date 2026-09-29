@@ -96,6 +96,12 @@ export default async function RootLayout({
       <head>
         <link rel="llms" type="text/plain" href="/llms.txt" />
         <script
+          defer
+          src="/consent-analytics.js"
+          data-ga-id="G-XPXJ49SCKZ"
+          data-privacy-url="/privacy"
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(softwareJsonLd),
