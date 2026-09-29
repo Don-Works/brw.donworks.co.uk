@@ -63,7 +63,7 @@ export default function AgentWebPage() {
 
           <h2>The measured difference</h2>
           <p>
-            Target: <a href={bookingExampleUrl} {...external}>revitt.co/book</a>,
+            Target: <a href={`${bookingExampleUrl}?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=agent_web`} {...external}>revitt.co/book</a>,
             driven through the extension bridge in a real signed-in Chromium,
             three runs per path. The end state for both: a slot is chosen and the
             booking can be submitted.
@@ -214,14 +214,21 @@ export default function AgentWebPage() {
           <h2>For site owners</h2>
           <p>
             A site brw can use without touching its DOM is one that publishes
-            some of the following. <a href={revittExampleUrl} {...external}>revitt.co</a>{" "}
+            some of the following. <a href={`${revittExampleUrl}/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=agent_web`} {...external}>revitt.co</a>{" "}
             publishes all of them and is the live example:
           </p>
           <ul>
             {revittSurfaces.map(([label, url]) => (
               <li key={url}>
                 {label}:{" "}
-                <a href={url} {...external}>
+                <a
+                  href={
+                    url.endsWith("/book")
+                      ? `${url}?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=agent_web`
+                      : url
+                  }
+                  {...external}
+                >
                   {url.replace("https://", "")}
                 </a>
               </li>

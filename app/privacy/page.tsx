@@ -29,7 +29,7 @@ export default function PrivacyPage() {
         <div className="section-inner legal-inner">
           <p className="section-kicker">privacy</p>
           <h1>Privacy policy</h1>
-          <p className="legal-updated">Last updated: 10 September 2026</p>
+          <p className="legal-updated">Last updated: 29 September 2026</p>
 
           <p>
             This policy covers the <strong>brw Chrome extension</strong> and the{" "}
@@ -174,6 +174,19 @@ export default function PrivacyPage() {
             for humans at Don Works or Revitt to read.
           </p>
 
+          <h2>This website</h2>
+          <p>
+            brw.donworks.co.uk counts visits with Vercel Web Analytics, which
+            sets no cookies. With your consent it also uses Google Analytics,
+            run by Revitt, to see how the site is used and which links bring
+            visitors. Until you accept, Google receives only cookieless,
+            anonymised pings. Change your choice at any time with{" "}
+            <a href="#cookie-settings" data-cookie-settings="">
+              Cookie settings
+            </a>
+            . The extension and daemon send nothing to either service.
+          </p>
+
           <h2>Open source</h2>
           <p>
             brw is open source under AGPL-3.0. You can read exactly what the
@@ -196,7 +209,7 @@ export default function PrivacyPage() {
             </Link>{" "}
             or reach{" "}
             <Link
-              href="https://revitt.co/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=brw_open_source&utm_content=privacy"
+              href="https://revitt.co/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=privacy"
               target="_blank"
               rel="noopener noreferrer"
             >
