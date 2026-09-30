@@ -409,6 +409,7 @@ const footerGroups = [
     links: [
       ["donworks.co.uk", donworksSite],
       ["Don Works on GitHub", donworksGithub],
+      ["Max’s technical blog", "https://maxrevitt.com/?utm_source=brw.donworks.co.uk&utm_medium=referral&utm_campaign=footer"],
     ],
   },
   {
