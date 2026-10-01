@@ -2,6 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import {
   agentWebBrwVersion,
+  nativeDispatchPolicy,
+  commerceSummary,
+  commerceDocsUrl,
   agentWebUpdated,
   aiCatalogExample,
   bookingExampleUrl,
@@ -103,7 +106,7 @@ export default function AgentWebPage() {
           </div>
           <p className="agent-web-after-table">
             Tool time is similar on both paths. The saving is in agent round
-            trips, each of which is a model turn, and in the bytes the agent
+            trips, which may each require another model turn, and in the bytes the agent
             reads, which are tokens.{" "}
             <a href={brwBookingRunUrl} {...external}>
               Method and raw ranges
@@ -171,6 +174,8 @@ export default function AgentWebPage() {
             </li>
           </ul>
 
+          <p>{nativeDispatchPolicy}</p>
+
           <h3>On every navigation</h3>
           <p>
             <code>brw_open</code>, <code>brw_navigate_to</code> and{" "}
@@ -178,6 +183,10 @@ export default function AgentWebPage() {
             <code>agent_surfaces</code> for the landed page. An ordinary page
             gets neither field.
           </p>
+
+          <h3>Commerce discovery and authorization</h3>
+          <p>{commerceSummary}</p>
+          <p><a href={commerceDocsUrl}>Commerce interoperability and current limits →</a></p>
 
           <h3>brw_read_url, with no browser</h3>
           <p>

@@ -133,3 +133,7 @@ export const aiCatalogExample = `{
     }
   ]
 }`;
+
+export const nativeDispatchPolicy = "In v0.18, brw chooses the native input representation before dispatch. An error does not trigger an automatic second invocation. Cancellation reports the tool's outcome; it does not roll back an external effect.";
+export const commerceSummary = "In v0.18, discovery can summarize a site's UCP version, capabilities, transports and payment handler identifiers from a bounded profile. It reports declarations without following checkout links or invoking payments. WebMCP, UCP discovery and payment authorization are separate contracts; brw does not provide a payment wallet or establish merchant trust.";
+export const commerceDocsUrl = "https://github.com/Don-Works/brw/blob/main/docs/commerce-interoperability.md";

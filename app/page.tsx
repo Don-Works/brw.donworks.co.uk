@@ -48,6 +48,10 @@ const brwInstallDocsUrl = "https://github.com/Don-Works/brw/blob/main/docs/insta
 const brwBenchmarksUrl = "https://github.com/Don-Works/brw/blob/main/docs/benchmarks.md";
 const brwRecipeDocsUrl =
   "https://github.com/Don-Works/brw/blob/main/docs/recipes-and-artifacts.md";
+const brwRepoRecipesUrl = "https://github.com/Don-Works/brw/blob/main/docs/repository-recipes.md";
+const brwResearchUrl = "https://github.com/Don-Works/brw/blob/main/docs/competitive-review-2026-10.md";
+const brwLandscapeUrl = "https://github.com/Don-Works/brw/blob/main/docs/browser-landscape-2026-10.md";
+const brwExtractionUrl = "https://github.com/Don-Works/brw/blob/main/skills/brw/references/extraction.md";
 const brwAuthModelUrl = "https://github.com/Don-Works/brw/blob/main/docs/auth-model.md";
 const brwLicenceUrl = "https://github.com/Don-Works/brw/blob/main/LICENSE";
 const brwReleaseWorkflowUrl =
@@ -95,19 +99,22 @@ const capabilityGroups: CapabilityGroup[] = [
       "Batch and plan many steps against one pinned tab",
       "Pre-arm waits so fast page events are not missed",
       "Cancel in-flight work and observe cheap page deltas",
+      "In v0.18, choose a read settle budget after checking readiness",
       "Trace a successful flow back into a replayable batch",
     ],
   },
   {
     label: "repeat",
     title: "Deterministic recipes",
-    body: "Move proven workflows out of prompts and into a private, reviewable runtime.",
+    body: "Run reviewed workflows from your repository or an optional recipe provider.",
     icon: Repeat,
     items: [
-      "Semantic search over disclosure-safe recipe metadata",
+      "Pass a recipe object directly, or search a provider and pin the result",
+      "Commit reviewed, sanitized recipes in .brw/recipes/ and run by file",
       "Immutable version and SHA-256 digest pinning",
       "Exact-origin gates, declared inputs, risk and idempotency",
       "Timers plus page, element, download, tab and network events",
+      "Named, bounded section, table and structured-field outputs in v0.18",
     ],
   },
   {
@@ -164,7 +171,7 @@ const why: PanelItem[] = [
   {
     label: "recipes",
     title: "Teach it once. Run it exactly.",
-    body: "Turn stable browser work into immutable recipes with exact origins, declared risk and durable postconditions — then search and run in two calls.",
+    body: "Pass a reviewed recipe in one call, or search and run a pinned provider recipe. Both paths enforce exact origins, declared risk and postconditions.",
     icon: Sparkles,
   },
   {
@@ -192,9 +199,9 @@ const benchmarks = [
     body: "A compact artifact handle instead of inline base64 for a 1.31 MB capture.",
   },
   {
-    value: "69.9%",
-    title: "less tool catalogue context",
-    body: "The default auto profile at startup versus advertising all 62 tools every turn.",
+    value: "14 tools",
+    title: "in the initial auto catalogue",
+    body: "Discover additional tools on demand. Initial schema size is only one part of an agent’s context budget.",
   },
 ];
 
@@ -226,12 +233,12 @@ const comparisonRows = [
   },
   {
     label: "Efficiency evidence",
-    brw: "Public local probes: 2.31× faster event settling, 51.9× less proxy transfer, 6,332× smaller capture results and 69.9% less initial tool context.",
-    claude: "No equivalent low-level benchmark is published in Anthropic's feature guide; private brw runs were directionally faster, not a numeric public claim.",
+    brw: "Published local probes for settling, bounded reads and artifact handles; reproducible scripts and explicit limits on the claims.",
+    claude: "Different product and execution model; the linked research does not establish a matched end-to-end speed ranking.",
   },
   {
     label: "Reusable work",
-    brw: "Private schema-validated recipes pinned by id, version and digest, with origin/risk/postcondition gates.",
+    brw: "Caller-supplied or provider-backed recipes, with origin/risk/postcondition gates and digest identity.",
     claude: "Recorded workflows in the classic side panel, reusable shortcuts and scheduled tasks.",
   },
   {
@@ -366,7 +373,7 @@ const agentWebCards = [
   {
     value: "3 vs 11",
     title: "Tool calls",
-    body: "Page tools against clicking through the booking form to the same point. Each call is a model turn.",
+    body: "Page tools against clicking through the booking form to the same point. Fewer calls can avoid extra model turns.",
   },
   {
     value: "7 vs 55 KB",
@@ -381,8 +388,8 @@ const agentWebCards = [
 ];
 
 const facts = [
-  ["surface", "62 tools"],
-  ["fast path", "2-call recipes"],
+  ["starts with", "14 tools"],
+  ["fast path", "inline recipes"],
   ["clients", "MCP + HTTP"],
   ["licence", "AGPL-3.0"],
 ];
@@ -470,7 +477,7 @@ export default async function HomePage() {
               brw gives any agent fast, inspectable control of real Chrome and
               Chromium. Stable refs replace pixel hunting, every action reports
               what changed, and deterministic recipes turn proven browser work
-              into a two-call run.
+              into a repeatable run.
             </p>
             <div className="hero-actions">
               <a href="#install" className="button button-primary">
@@ -582,8 +589,8 @@ export default async function HomePage() {
                   <h3>Promote the proven flow</h3>
                   <p>
                     Trace or draft the successful mechanics, validate the
-                    semantic targets and install an immutable recipe. Next time:
-                    search, pin and run.
+                    semantic targets and save a reviewed recipe. Next time, pass
+                    it directly or search, pin and run through a provider.
                   </p>
                 </div>
               </article>
@@ -631,10 +638,11 @@ export default async function HomePage() {
               <p className="section-kicker">recipes</p>
               <h2>Stop paying the model to rediscover solved work.</h2>
               <p>
-                A brw recipe is a private, deterministic browser workflow — not
-                a saved prompt. Search returns safe metadata. Run fetches the
-                exact immutable version and executes it beside the browser with
-                origin, risk and postcondition checks.
+                A brw recipe is a deterministic browser workflow. Pass the recipe
+                object directly, run a reviewed file from your project, or use
+                a provider with immutable version and digest pins. Every path
+                executes beside the browser with origin, risk and postcondition
+                checks.
               </p>
               <Link
                 href={brwRecipeDocsUrl}
@@ -648,25 +656,23 @@ export default async function HomePage() {
 
             <div className="recipe-console">
               <div className="recipe-console-head">
-                <span>known workflow</span>
-                <span>two calls</span>
+                <span>bring your recipe</span>
+                <span>one call</span>
               </div>
               <div className="recipe-command">
-                <span>01 / search</span>
+                <span>inline / MCP</span>
                 <code>
-                  brw_recipe_search {"{"} query, origin {"}"}
+                  brw_recipe_run {"{"} recipe, inputs {"}"}
                 </code>
-                <p>Returns id, version, digest, risk and score — never the private steps.</p>
+                <p>No provider or installation required. The result identifies the executed recipe by digest.</p>
               </div>
               <div className="recipe-arrow" aria-hidden="true">
-                ↓ pin the exact match
+                or run a reviewed repository file
               </div>
               <div className="recipe-command recipe-command-hot">
-                <span>02 / run</span>
-                <code>
-                  brw_recipe_run {"{"} id, version, digest, inputs {"}"}
-                </code>
-                <p>Returns status, attempts, timings and artifact handles.</p>
+                <span>file / CLI</span>
+                <code>brw run --file .brw/recipes/catalog.1.0.0.json</code>
+                <p>Provider recipes still use search, then run with id, version and digest. Inline recipes are not saved or indexed automatically.</p>
               </div>
             </div>
 
@@ -675,24 +681,54 @@ export default async function HomePage() {
                 <Fingerprint aria-hidden="true" />
                 <span>
                   <strong>Immutable identity</strong>
-                  An id, semantic version and SHA-256 digest must all match.
+                  Provider pins must match; inline results record the executed content digest.
                 </span>
               </li>
               <li>
                 <ShieldCheck aria-hidden="true" />
                 <span>
-                  <strong>Safe writes</strong>
+                  <strong>Checked writes</strong>
                   Exact origins, one allowed actuation and durable postconditions.
                 </span>
               </li>
               <li>
                 <FileText aria-hidden="true" />
                 <span>
-                  <strong>Private by design</strong>
-                  Recipe bodies and credentials stay outside the public repo.
+                  <strong>Share deliberately</strong>
+                  Commit reviewed, sanitized mechanics. Keep credentials, account data and raw traces out of recipes.
                 </span>
               </li>
             </ul>
+          </div>
+        </section>
+
+        <section id="recipe-outputs" className="section section-alt">
+          <div className="section-inner">
+            <div className="section-header">
+              <p className="section-kicker">v0.18 capabilities</p>
+              <h2>Recipes you own. Results you can check.</h2>
+              <p>Named extraction, read settle control and bounded UCP summaries require v0.18.0 or newer. Check the latest release before using them.</p>
+            </div>
+            <div className="capability-grid">
+              <article className="capability-panel">
+                <h3>Say where to look and what to return.</h3>
+                <p>Recipes can select an exact section, a uniquely identified table or allowlisted structured fields. Named outputs return bounded artifact handles with source provenance. Section and table selectors reject ambiguous or incomplete sources. Structured captures check the declared source and required normalized fields; they do not prove that conflicting embedded records agree. Every capture enforces its output budget.</p>
+                <p>Extraction refuses recipes with runtime secrets. A provenance record identifies the source; it does not establish that the page is truthful.</p>
+                <Link href={brwExtractionUrl} className="text-link">Extraction contract →</Link>
+              </article>
+              <article className="capability-panel">
+                <h3>Keep reusable work with your code.</h3>
+                <p>Use <code>.brw/recipes/</code> for reviewed, sanitized files. Validate with <code>brwctl recipe validate --file</code>, then run the chosen file explicitly. There is no automatic directory scan.</p>
+                <p>Providers are optional. The HTTP provider contract can front Maix, Notion or Postgres through your adapter; those adapters are not bundled.</p>
+                <Link href={brwRepoRecipesUrl} className="text-link">Repository and registry guidance →</Link>
+              </article>
+              <article className="capability-panel">
+                <h3>Spend context and waiting time deliberately.</h3>
+                <p>After an explicit readiness check, use <code>settle_ms: 0</code> to skip the default sparse-page wait. Retained snapshot baselines let intermediate observations coexist with delta reads.</p>
+                <p>Keep model selection in your orchestrator: a smaller worker can execute bounded work while a larger planner reasons. Measure repair rates and total latency before choosing that split.</p>
+                <Link href={brwResearchUrl} className="text-link">Measurements and limitations →</Link>
+              </article>
+            </div>
           </div>
         </section>
 
@@ -702,9 +738,9 @@ export default async function HomePage() {
               <p className="section-kicker">the full surface</p>
               <h2>Everything the agent needs. One browser layer.</h2>
               <p>
-                brw exposes 62 tools today, but does not dump all 62 into every
-                prompt. The default starts lean and discloses the long tail only
-                when the agent asks for it.
+                The default MCP catalogue starts with 14 tools and discloses
+                more when the agent asks. Bounded reads and artifact handles
+                keep large results out of the conversation until needed.
               </p>
             </div>
             <div className="capability-grid">
@@ -741,11 +777,9 @@ export default async function HomePage() {
               <p className="section-kicker">proof + comparison</p>
               <h2>Built to do more work with less browser overhead.</h2>
               <p>
-                Private pre-release head-to-heads against Claude in Chrome moved
-                in the same direction: fewer turns, fewer tokens, less wall time
-                and lower estimated cost. Those transcripts contain private page
-                state, so we label that result directional — not a public numeric
-                promise.
+                Read the October research across browser drivers, hosted browsers,
+                crawlers and agent runtimes. It separates documented competitor
+                features, measured brw behavior and proposals still to test.
               </p>
             </div>
 
@@ -759,11 +793,14 @@ export default async function HomePage() {
               ))}
             </div>
             <p className="benchmark-note">
-              Reproducible Apple M4 Max samples from September 2026. These are
-              brw engineering probes, not Claude measurements.{" "}
+              The first three cards are Apple M4 Max probes from September 2026;
+              the last is the current startup tool count. These are not
+              end-to-end competitor benchmarks.{" "}
               <Link href={brwBenchmarksUrl} target="_blank" rel="noopener noreferrer">
                 Methods and caveats →
-              </Link>
+              </Link>{" · "}
+              <Link href={brwResearchUrl} target="_blank" rel="noopener noreferrer">October measurements →</Link>{" · "}
+              <Link href={brwLandscapeUrl} target="_blank" rel="noopener noreferrer">Wider competitor research →</Link>
             </p>
 
             <div className="comparison-intro">
