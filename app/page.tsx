@@ -736,7 +736,7 @@ export default async function HomePage() {
             <div className="section-header">
               <p className="section-kicker">bring your own model</p>
               <h2>Your main agent can use brw directly.</h2>
-              <p>brw itself needs no model service. The agent you already use can call its tools. Optional workers are source-checkout experiments you configure when a task benefits from them.</p>
+              <p>brw itself needs no model service. The agent you already use can call its tools. v0.19.0 also bundles an optional Python reader adapter and worker, registered separately with your MCP client.</p>
             </div>
             <div className="support-grid">
               <article className="info-panel">
@@ -745,9 +745,9 @@ export default async function HomePage() {
                 <p>Your model reads bounded page content, chooses semantic controls and checks results. Proven work can run as a deterministic recipe without a model choosing each step.</p>
               </article>
               <article className="info-panel">
-                <div className="panel-topline"><span>optional experiment</span><FileText aria-hidden="true" /></div>
+                <div className="panel-topline"><span>v0.19.0 · optional adapter</span><FileText aria-hidden="true" /></div>
                 <h3>Delegate a reading task</h3>
-                <p>A configurable local or hosted generative worker can read the evidence and return a short answer with its source. The main agent receives the bounded result; the worker still has processing and context costs.</p>
+                <p>Run the separately registered reader with a local or hosted model endpoint you configure. It returns a bounded answer with its source and trace. The worker still has processing and context costs; no hosted reader service is included.</p>
               </article>
               <article className="info-panel">
                 <div className="panel-topline"><span>optional experiment</span><ScanSearch aria-hidden="true" /></div>
@@ -755,7 +755,7 @@ export default async function HomePage() {
                 <p>A classifier such as Jev can rank supplied candidates or select relevant passages. It does not write answers. Use a generative worker, a classifier, both, or neither.</p>
               </article>
             </div>
-            <p className="benchmark-note">Smaller evidence is not automatically better: passage selection introduced a factual regression in a small canary, so it is not enabled by default. These experiments are separate from the released daemon. <a href={brwResearchUrl}>Read the results and limitations →</a></p>
+            <p className="benchmark-note">The adapter is packaged, but the model workflow remains exploratory. Passage selection introduced a factual regression in a small canary, so it is not enabled by default. The reader is separate from brw’s core MCP catalogue. <a href={brwResearchUrl}>Read the results and limitations →</a></p>
           </div>
         </section>
 
@@ -782,9 +782,9 @@ export default async function HomePage() {
               ))}
             </div>
             <p className="benchmark-note">
-              Checked 1 October 2026. The role-filter optimization is a development
-              build measurement; the worker is an opt-in experiment. Neither is
-              promised by the v0.18.1 installer. Payload characters are not
+              Measured before release on 1 October 2026. The role-filter optimization
+              ships in v0.19.0. The optional reader is bundled and separately
+              registered; its model workflow remains exploratory. Payload characters are not
               billed tokens. Machine, fixture and method are in the linked reports.{" "}
               <Link href={brwBenchmarksUrl} target="_blank" rel="noopener noreferrer">
                 Methods and caveats →

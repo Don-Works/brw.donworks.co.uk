@@ -53,7 +53,7 @@ export const measurements = [
   {
     value: "9.46×",
     title: "faster role-filtered extraction",
-    status: "development build · unreleased",
+    status: "released in v0.19.0",
     body: "Wikipedia searchbox extraction fell from 22.7 to 2.4 ms median. MDN and Hacker News measured 3.25× and 6.2×. These time the in-page extraction only, not a browser job.",
   },
   {
