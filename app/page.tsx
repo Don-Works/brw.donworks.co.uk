@@ -25,6 +25,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { getLatestRelease } from "@/lib/latestRelease";
+import { comparisonRows, measurements } from "@/lib/siteEvidence";
 
 type PanelItem = {
   label: string;
@@ -45,12 +46,12 @@ type CapabilityGroup = {
 const brwUrl = "https://github.com/Don-Works/brw";
 const brwReleasesUrl = "https://github.com/Don-Works/brw/releases";
 const brwInstallDocsUrl = "https://github.com/Don-Works/brw/blob/main/docs/install.md";
-const brwBenchmarksUrl = "https://github.com/Don-Works/brw/blob/main/docs/benchmarks.md";
+const brwBenchmarksUrl = "https://github.com/Don-Works/brw/blob/82d59b6/docs/benchmarks.md";
 const brwRecipeDocsUrl =
   "https://github.com/Don-Works/brw/blob/main/docs/recipes-and-artifacts.md";
 const brwRepoRecipesUrl = "https://github.com/Don-Works/brw/blob/main/docs/repository-recipes.md";
-const brwResearchUrl = "https://github.com/Don-Works/brw/blob/main/docs/competitive-review-2026-10.md";
-const brwLandscapeUrl = "https://github.com/Don-Works/brw/blob/main/docs/browser-landscape-2026-10.md";
+const brwResearchUrl = "https://github.com/Don-Works/brw/blob/82d59b6/docs/competitive-review-2026-10.md";
+const brwLandscapeUrl = "https://github.com/Don-Works/brw/blob/82d59b6/docs/browser-landscape-2026-10.md";
 const brwExtractionUrl = "https://github.com/Don-Works/brw/blob/main/skills/brw/references/extraction.md";
 const brwAuthModelUrl = "https://github.com/Don-Works/brw/blob/main/docs/auth-model.md";
 const brwLicenceUrl = "https://github.com/Don-Works/brw/blob/main/LICENSE";
@@ -60,8 +61,6 @@ const brwReleaseWorkflowUrl =
 // URL a reader opens in a browser is byte-for-byte what `curl | sh` executes.
 const installScriptPath = "/install.sh";
 const installCommand = "curl -fsSL https://brw.donworks.co.uk/install.sh | sh";
-const claudeChromeGuideUrl =
-  "https://support.claude.com/en/articles/12012173-get-started-with-claude-in-chrome";
 const extensionId = "amocjcgddnoakjijfggdpnefdnboilpe";
 // Unlisted Chrome Web Store install URL. Set this once the item is published;
 // until then the Install section shows the manual (load-unpacked) route only.
@@ -84,7 +83,8 @@ const capabilityGroups: CapabilityGroup[] = [
     icon: ScanSearch,
     items: [
       "Snapshot and find interactive controls by role, name, text or test id",
-      "Read prose, headings, links, forms, tables, Open Graph and JSON-LD",
+      "Read a public URL without opening a tab; use the browser for rendered or signed-in content",
+      "Read selected prose, headings, links, forms, tables, Open Graph and JSON-LD",
       "Click, type, fill, select, press, scroll, hover, drag and upload",
       "Wait and assert visibility, text, values and navigation outcomes",
       "Discover and call a page's WebMCP tools, native or declarative, on every transport",
@@ -92,13 +92,14 @@ const capabilityGroups: CapabilityGroup[] = [
   },
   {
     label: "compose",
-    title: "Fast multi-step execution",
+    title: "Fewer trips to the browser",
     body: "Collapse browser work into fewer calls while preserving explicit checks.",
     icon: Zap,
     items: [
       "Batch and plan many steps against one pinned tab",
       "Pre-arm waits so fast page events are not missed",
-      "Cancel in-flight work and observe cheap page deltas",
+      "Request compact snapshots, then only changes since a prior version",
+      "Cancel in-flight work and observe page changes",
       "In v0.18, choose a read settle budget after checking readiness",
       "Trace a successful flow back into a replayable batch",
     ],
@@ -158,14 +159,14 @@ const capabilityGroups: CapabilityGroup[] = [
 const why: PanelItem[] = [
   {
     label: "control",
-    title: "The whole browser surface",
+    title: "One browser control layer",
     body: "More than clicks: tabs, groups, forms, files, console, network, responsive testing, downloads, artifacts and human hand-off — exposed as MCP and HTTP.",
     icon: Bot,
   },
   {
     label: "quickly",
     title: "Fewer calls, smaller payloads",
-    body: "Stable refs, action observations, batched plans, bounded reads and on-demand tool disclosure remove repeat screenshots and unnecessary round-trips.",
+    body: "Find one control, read one section, or return only snapshot changes. Batch related actions and keep large captures in artifacts until you need them.",
     icon: Gauge,
   },
   {
@@ -177,79 +178,8 @@ const why: PanelItem[] = [
   {
     label: "your auth",
     title: "Your real browser logins",
-    body: "Bridges to the installed, signed-in browser you already use — Chrome, Chromium, Edge, Brave, Vivaldi, Opera or Arc. The sites you're logged into, brw is too, and cookies and sessions stay on your machine.",
+    body: "Use an extension bridge for your existing signed-in Chromium profile, or a separate brw-owned browser for automation. Browser support and available features depend on the transport.",
     icon: KeyRound,
-  },
-];
-
-const benchmarks = [
-  {
-    value: "2.31×",
-    title: "faster event settling",
-    body: "Pre-armed semantic waits versus arming after a synchronous DOM reaction.",
-  },
-  {
-    value: "51.9×",
-    title: "less proxy transfer",
-    body: "A bounded browser-host read instead of hauling the full payload across HTTP.",
-  },
-  {
-    value: "6,332×",
-    title: "smaller capture result",
-    body: "A compact artifact handle instead of inline base64 for a 1.31 MB capture.",
-  },
-  {
-    value: "14 tools",
-    title: "in the initial auto catalogue",
-    body: "Discover additional tools on demand. Initial schema size is only one part of an agent’s context budget.",
-  },
-];
-
-const comparisonRows = [
-  {
-    label: "What it is",
-    brw: "Open browser-control infrastructure for agents and automation systems.",
-    claude: "Anthropic's end-user browser agent inside Claude products.",
-  },
-  {
-    label: "Who can drive it",
-    brw: "Any MCP client or HTTP client — Claude, Codex, Cursor, pi, your own service.",
-    claude: "Claude Code, Claude Cowork and the Claude side panel.",
-  },
-  {
-    label: "Browser support",
-    brw: "Chrome and Chromium, plus Edge, Brave, Vivaldi, Opera and Arc — any Chromium build, named with one flag. Local, or a remote browser host over SSH.",
-    claude: "Google Chrome; other Chromium browsers are not supported.",
-  },
-  {
-    label: "Signed-in browser",
-    brw: "Yes — bridge into an installed profile, or use a dedicated direct-CDP profile.",
-    claude: "Yes — works alongside the user's signed-in Chrome session.",
-  },
-  {
-    label: "Control contract",
-    brw: "Stable semantic refs, bounded reads, observations after actions, assertions, batch, plan, cancel and trace.",
-    claude: "Reads, clicks, types, navigates and fills forms; also exposes screenshots, console, network and DOM context.",
-  },
-  {
-    label: "Efficiency evidence",
-    brw: "Published local probes for settling, bounded reads and artifact handles; reproducible scripts and explicit limits on the claims.",
-    claude: "Different product and execution model; the linked research does not establish a matched end-to-end speed ranking.",
-  },
-  {
-    label: "Reusable work",
-    brw: "Caller-supplied or provider-backed recipes, with origin/risk/postcondition gates and digest identity.",
-    claude: "Recorded workflows in the classic side panel, reusable shortcuts and scheduled tasks.",
-  },
-  {
-    label: "Large outputs",
-    brw: "Browser-host artifacts for text, JSON, images, PDFs, downloads and video, read back in bounded windows.",
-    claude: "No comparable public artifact-handle API is documented.",
-  },
-  {
-    label: "Ownership",
-    brw: "Self-hosted, AGPL-3.0 source, local data path, optional commercial licence.",
-    claude: "Proprietary Anthropic service; available on paid Claude plans.",
   },
 ];
 
@@ -443,12 +373,12 @@ export default async function HomePage() {
         </Link>
         <nav className="main-nav" aria-label="Main navigation">
           <a href="#why">Why</a>
-          <a href="#agent-web">Agent web</a>
+          <a href="#browsers">Browsers</a>
           <a href="#recipes">Recipes</a>
           <a href="#features">Features</a>
           <a href="#compare">Compare</a>
           <a href="#install">Install</a>
-          <a href="#trust">Trust</a>
+          <a href="#models">Models</a>
           <a href="#safety">Safety</a>
           <Link href={brwUrl} target="_blank" rel="noopener noreferrer">
             GitHub
@@ -471,13 +401,13 @@ export default async function HomePage() {
               <BrwMark title="brw" />
             </div>
             <h1 className="hero-tagline">
-              Control Chrome and Chromium completely. Quickly. With recipes.
+              Your browser. Your agent. Less repeated work.
             </h1>
             <p className="hero-lede">
-              brw gives any agent fast, inspectable control of real Chrome and
-              Chromium. Stable refs replace pixel hunting, every action reports
-              what changed, and deterministic recipes turn proven browser work
-              into a repeatable run.
+              Give your agent inspectable control of Chrome, Chromium and other
+              Chromium browsers. Read only what matters, act on named controls,
+              and turn proven workflows into repeatable recipes. Use your own
+              model through MCP, HTTP or the CLI.
             </p>
             <div className="hero-actions">
               <a href="#install" className="button button-primary">
@@ -513,11 +443,11 @@ export default async function HomePage() {
           <div className="section-inner">
             <div className="section-header">
               <p className="section-kicker">why brw</p>
-              <h2>Control more. Spend less. Repeat what works.</h2>
+              <h2>Read less. Act precisely. Repeat what works.</h2>
               <p>
-                Most browser agents are a feature inside one product. brw is the
-                browser-control layer: open, inspectable and reusable from any
-                agent that speaks MCP or HTTP.
+                brw is the browser-control layer. Your agent chooses what to do;
+                brw reads pages, acts on controls and checks outcomes. Connect
+                your existing assistant or build your own workflow around it.
               </p>
             </div>
             <div className="panel-grid panel-grid-4">
@@ -541,6 +471,36 @@ export default async function HomePage() {
                   )}
                 </article>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="browsers" className="section section-alt">
+          <div className="section-inner">
+            <div className="section-header">
+              <p className="section-kicker">browser support</p>
+              <h2>Chromium browsers today. Firefox is a prototype.</h2>
+              <p>Choose the browser you use and the connection that fits the job.</p>
+            </div>
+            <div className="support-grid">
+              <article className="info-panel">
+                <div className="panel-topline"><span>supported browser family</span><Check aria-hidden="true" /></div>
+                <h3>Chrome, Chromium, Opera and more</h3>
+                <p>Setup has named options for Chrome, Chromium, Edge, Brave, Vivaldi, Opera and Arc. brw uses the Chromium DevTools Protocol; installation details vary by browser and operating system.</p>
+                <a className="text-link" href={brwInstallDocsUrl}>Browser setup guide →</a>
+              </article>
+              <article className="info-panel">
+                <div className="panel-topline"><span>choose a connection</span><Layers aria-hidden="true" /></div>
+                <h3>Your profile or a dedicated browser</h3>
+                <p>The extension bridge uses an existing signed-in profile. Direct CDP runs a separate browser with headless mode and isolated contexts. The transport table below shows the differences.</p>
+                <a className="text-link" href="#transports">Compare connections →</a>
+              </article>
+              <article className="info-panel">
+                <div className="panel-topline"><span>research only</span><FileCode aria-hidden="true" /></div>
+                <h3>Firefox is not supported yet</h3>
+                <p>A WebDriver BiDi prototype has exercised Firefox primitives, but it is not wired into brwd or exposed through brw tools. Safari also has no supported backend.</p>
+                <a className="text-link" href="https://github.com/Don-Works/brw/blob/main/docs/bidi-prototype.md">Firefox prototype findings →</a>
+              </article>
             </div>
           </div>
         </section>
@@ -623,8 +583,8 @@ export default async function HomePage() {
             <p className="benchmark-note">
               Reaching a bookable slot on revitt.co/book through its five WebMCP
               tools, against driving the form: three runs each, brw 0.15.2, 25
-              September 2026. Tool time was similar; the saving is in model turns
-              and tokens.{" "}
+              September 2026. Tool time was similar; the measured saving is in calls and returned
+              bytes. Billed tokens depend on the agent and model.{" "}
               <Link href="/agent-web">
                 What brw does, and how to make a site work this way →
               </Link>
@@ -736,7 +696,7 @@ export default async function HomePage() {
           <div className="section-inner">
             <div className="section-header">
               <p className="section-kicker">the full surface</p>
-              <h2>Everything the agent needs. One browser layer.</h2>
+              <h2>From reading a page to running a workflow.</h2>
               <p>
                 The default MCP catalogue starts with 14 tools and discloses
                 more when the agent asks. Bounded reads and artifact handles
@@ -771,21 +731,50 @@ export default async function HomePage() {
           </div>
         </section>
 
+        <section id="models" className="section section-alt">
+          <div className="section-inner">
+            <div className="section-header">
+              <p className="section-kicker">bring your own model</p>
+              <h2>Your main agent can use brw directly.</h2>
+              <p>brw itself needs no model service. The agent you already use can call its tools. Optional workers are source-checkout experiments you configure when a task benefits from them.</p>
+            </div>
+            <div className="support-grid">
+              <article className="info-panel">
+                <div className="panel-topline"><span>available now</span><Bot aria-hidden="true" /></div>
+                <h3>Use your existing agent</h3>
+                <p>Your model reads bounded page content, chooses semantic controls and checks results. Proven work can run as a deterministic recipe without a model choosing each step.</p>
+              </article>
+              <article className="info-panel">
+                <div className="panel-topline"><span>optional experiment</span><FileText aria-hidden="true" /></div>
+                <h3>Delegate a reading task</h3>
+                <p>A configurable local or hosted generative worker can read the evidence and return a short answer with its source. The main agent receives the bounded result; the worker still has processing and context costs.</p>
+              </article>
+              <article className="info-panel">
+                <div className="panel-topline"><span>optional experiment</span><ScanSearch aria-hidden="true" /></div>
+                <h3>Route a bounded decision</h3>
+                <p>A classifier such as Jev can rank supplied candidates or select relevant passages. It does not write answers. Use a generative worker, a classifier, both, or neither.</p>
+              </article>
+            </div>
+            <p className="benchmark-note">Smaller evidence is not automatically better: passage selection introduced a factual regression in a small canary, so it is not enabled by default. These experiments are separate from the released daemon. <a href={brwResearchUrl}>Read the results and limitations →</a></p>
+          </div>
+        </section>
+
         <section id="compare" className="section section-alt comparison-section">
           <div className="section-inner">
             <div className="section-header comparison-header">
               <p className="section-kicker">proof + comparison</p>
               <h2>Built to do more work with less browser overhead.</h2>
               <p>
-                Read the October research across browser drivers, hosted browsers,
-                crawlers and agent runtimes. It separates documented competitor
-                features, measured brw behavior and proposals still to test.
+                Smaller observations and deterministic execution reduce avoidable
+                work. These measurements isolate specific costs; they do not
+                establish a whole-task speedup or a ranking against competitors.
               </p>
             </div>
 
             <div className="benchmark-grid" aria-label="Reproducible brw measurements">
-              {benchmarks.map((benchmark) => (
+              {measurements.map((benchmark) => (
                 <article key={benchmark.title} className="benchmark-card">
+                  <span className="evidence-status">{benchmark.status}</span>
                   <strong>{benchmark.value}</strong>
                   <h3>{benchmark.title}</h3>
                   <p>{benchmark.body}</p>
@@ -793,9 +782,10 @@ export default async function HomePage() {
               ))}
             </div>
             <p className="benchmark-note">
-              The first three cards are Apple M4 Max probes from September 2026;
-              the last is the current startup tool count. These are not
-              end-to-end competitor benchmarks.{" "}
+              Checked 1 October 2026. The role-filter optimization is a development
+              build measurement; the worker is an opt-in experiment. Neither is
+              promised by the v0.18.1 installer. Payload characters are not
+              billed tokens. Machine, fixture and method are in the linked reports.{" "}
               <Link href={brwBenchmarksUrl} target="_blank" rel="noopener noreferrer">
                 Methods and caveats →
               </Link>{" · "}
@@ -805,43 +795,41 @@ export default async function HomePage() {
 
             <div className="comparison-intro">
               <div>
-                <p className="section-kicker">brw vs Claude in Chrome</p>
-                <h3>Infrastructure versus a finished assistant.</h3>
+                <p className="section-kicker">choose the right layer</p>
+                <h3>How brw fits alongside other tools.</h3>
               </div>
               <p>
-                Claude in Chrome is polished and capable. brw wins when you need
-                an open, agent-agnostic control layer, deterministic execution or
-                an API you own. Here is the fair comparison.
+                These tools overlap, but solve different problems. Start with the
+                documented strengths below, then choose for your browser,
+                workflow and hosting needs.
               </p>
             </div>
 
-            <div className="comparison-wrap" tabIndex={0}>
-              <table className="comparison-table">
+            <div className="comparison-wrap transport-wrap" tabIndex={0} aria-label="Browser automation tool comparison">
+              <table className="comparison-table transport-table landscape-table">
                 <thead>
                   <tr>
-                    <th scope="col">Capability</th>
-                    <th scope="col" className="brw-column">brw</th>
-                    <th scope="col">Claude in Chrome</th>
+                    <th scope="col">Tool</th>
+                    <th scope="col">Documented strengths</th>
+                    <th scope="col" className="brw-column">How brw compares</th>
                   </tr>
                 </thead>
                 <tbody>
                   {comparisonRows.map((row) => (
                     <tr key={row.label}>
-                      <th scope="row">{row.label}</th>
-                      <td className="brw-column">{row.brw}</td>
-                      <td>{row.claude}</td>
+                      <th scope="row"><a href={row.href} target="_blank" rel="noopener noreferrer">{row.label} ↗</a></th>
+                      <td data-lane="Documented strengths">{row.strength}</td>
+                      <td className="brw-column" data-lane="How brw compares">{row.brw}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
             <p className="comparison-note">
-              Compared from public documentation checked 10 September 2026.{" "}
-              <a href={claudeChromeGuideUrl} target="_blank" rel="noopener noreferrer">
-                Read Anthropic&apos;s current feature guide
-              </a>
-              . Claude is an Anthropic product; brw is independent and is not
-              affiliated with or endorsed by Anthropic.
+              Primary documentation checked 1 October 2026; each tool name links
+              to its source. This is a feature comparison, not a matched benchmark.
+              No overall speed or success-rate ranking has been established.
+              Product names belong to their respective owners; brw is independent.
             </p>
           </div>
         </section>
@@ -864,7 +852,7 @@ export default async function HomePage() {
                 <span className="install-badge">start here</span>
                 macOS and Linux
               </p>
-              <pre className="codeblock codeblock-lead">
+              <pre tabIndex={0} className="codeblock codeblock-lead">
                 <code>
                   <span className="prompt">$ </span>
                   {installCommand}
@@ -1134,7 +1122,7 @@ export default async function HomePage() {
                 </ul>
               </div>
 
-              <pre className="codeblock">
+              <pre tabIndex={0} className="codeblock">
                 <code>
                   <span className="cmt"># setup prints this line with your workspace filled in</span>
                   {"\n"}
@@ -1147,7 +1135,7 @@ export default async function HomePage() {
                 </code>
               </pre>
 
-              <pre className="codeblock">
+              <pre tabIndex={0} className="codeblock">
                 <code>
                   <span className="cmt"># then check it end to end</span>
                   {"\n"}
@@ -1164,7 +1152,7 @@ export default async function HomePage() {
                 </code>
               </pre>
 
-              <pre className="codeblock">
+              <pre tabIndex={0} className="codeblock">
                 <code>
                   <span className="cmt"># build from source instead</span>
                   {"\n"}
@@ -1279,7 +1267,7 @@ export default async function HomePage() {
               ))}
             </div>
 
-            <pre className="codeblock trust-commands">
+            <pre tabIndex={0} className="codeblock trust-commands">
               <code>
                 <span className="cmt"># the file matches the release</span>
                 {"\n"}
