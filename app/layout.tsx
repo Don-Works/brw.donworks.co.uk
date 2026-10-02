@@ -70,7 +70,7 @@ export default async function RootLayout({
     description,
     url: siteUrl,
     applicationCategory: "DeveloperApplication",
-    operatingSystem: "macOS, Linux, Windows",
+    operatingSystem: "macOS, Linux",
     softwareVersion: version.replace(/^v/, "") || undefined,
     license: "https://www.gnu.org/licenses/agpl-3.0.html",
     codeRepository: brwGithubUrl,

@@ -25,7 +25,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { getLatestRelease } from "@/lib/latestRelease";
-import { comparisonRows, measurements } from "@/lib/siteEvidence";
+import { comparisonRows, measurements, deepDiveUrl, releaseHighlights } from "@/lib/siteEvidence";
 
 type PanelItem = {
   label: string;
@@ -46,12 +46,12 @@ type CapabilityGroup = {
 const brwUrl = "https://github.com/Don-Works/brw";
 const brwReleasesUrl = "https://github.com/Don-Works/brw/releases";
 const brwInstallDocsUrl = "https://github.com/Don-Works/brw/blob/main/docs/install.md";
-const brwBenchmarksUrl = "https://github.com/Don-Works/brw/blob/82d59b6/docs/benchmarks.md";
+const brwBenchmarksUrl = "https://github.com/Don-Works/brw/blob/v0.20.0/docs/benchmarks.md";
 const brwRecipeDocsUrl =
   "https://github.com/Don-Works/brw/blob/main/docs/recipes-and-artifacts.md";
 const brwRepoRecipesUrl = "https://github.com/Don-Works/brw/blob/main/docs/repository-recipes.md";
-const brwResearchUrl = "https://github.com/Don-Works/brw/blob/82d59b6/docs/competitive-review-2026-10.md";
-const brwLandscapeUrl = "https://github.com/Don-Works/brw/blob/82d59b6/docs/browser-landscape-2026-10.md";
+const brwResearchUrl = "https://github.com/Don-Works/brw/blob/v0.20.0/docs/competitive-review-2026-10.md";
+const brwLandscapeUrl = "https://github.com/Don-Works/brw/blob/v0.20.0/docs/browser-landscape-2026-10.md";
 const brwExtractionUrl = "https://github.com/Don-Works/brw/blob/main/skills/brw/references/extraction.md";
 const brwAuthModelUrl = "https://github.com/Don-Works/brw/blob/main/docs/auth-model.md";
 const brwLicenceUrl = "https://github.com/Don-Works/brw/blob/main/LICENSE";
@@ -86,7 +86,7 @@ const capabilityGroups: CapabilityGroup[] = [
       "Read a public URL without opening a tab; use the browser for rendered or signed-in content",
       "Read selected prose, headings, links, forms, tables, Open Graph and JSON-LD",
       "Click, type, fill, select, press, scroll, hover, drag and upload",
-      "Wait and assert visibility, text, values and navigation outcomes",
+      "Wait and assert visibility, text, values including empty fields, and navigation outcomes",
       "Discover and call a page's WebMCP tools, native or declarative, on every transport",
     ],
   },
@@ -100,7 +100,7 @@ const capabilityGroups: CapabilityGroup[] = [
       "Pre-arm waits so fast page events are not missed",
       "Request compact snapshots, then only changes since a prior version",
       "Cancel in-flight work and observe page changes",
-      "In v0.18, choose a read settle budget after checking readiness",
+      "Choose a read settle budget after checking readiness",
       "Trace a successful flow back into a replayable batch",
     ],
   },
@@ -115,7 +115,7 @@ const capabilityGroups: CapabilityGroup[] = [
       "Immutable version and SHA-256 digest pinning",
       "Exact-origin gates, declared inputs, risk and idempotency",
       "Timers plus page, element, download, tab and network events",
-      "Named, bounded section, table and structured-field outputs in v0.18",
+      "Named, bounded section, table and structured-field outputs",
     ],
   },
   {
@@ -140,6 +140,7 @@ const capabilityGroups: CapabilityGroup[] = [
       "Authenticated in-page request replay with mutation guards",
       "Screenshots, element crops and Set-of-Marks overlays",
       "Downloads, responsive device emulation and real window bounds",
+      "Local usage reports for operation latency and payload size, with measurement boundaries kept separate",
     ],
   },
   {
@@ -238,7 +239,7 @@ const trustGroups: CapabilityGroup[] = [
     icon: ScrollText,
     items: [
       "The extension ships unminified — every file in the package is a file in the repo",
-      "No telemetry, no analytics, no account, no Don Works service in the data path",
+      "No publisher telemetry or brw account; bounded usage metadata stays on your machine",
       "Improvements flow back under the same licence; a commercial licence is available",
     ],
   },
@@ -255,24 +256,24 @@ const trustGroups: CapabilityGroup[] = [
   },
   {
     label: "signing",
-    title: "Code signing is not in place",
-    body: "No release artifact carries a platform code-signing signature today, on any operating system.",
+    title: "Check each release’s signing report",
+    body: "Current macOS binaries are ad-hoc signed, which identifies no developer. Installers are unsigned and not notarised.",
     icon: Signature,
     items: [
-      "macOS packages are unsigned and not notarised; Windows packages carry no Authenticode signature",
+      "macOS .pkg installers are unsigned; Apple Silicon binaries carry an ad-hoc signature",
       "Linux .deb and .rpm are unsigned — there is no distribution GPG key to check them against",
-      "The signing pipeline is written and switches on when certificates are bought. No date is set",
+      "The release notes report signing and notarisation status for the actual artifacts",
     ],
   },
   {
     label: "pipeline",
     title: "What a tag has to pass",
-    body: "A release builds only after the gate in the public workflow file.",
+    body: "The repository’s pre-push hook runs task check. The release workflow builds, attests and publishes the tagged commit.",
     icon: FileCode,
     items: [
       "Unit tests plus a deterministic real-browser functional suite",
       "go vet, staticcheck and govulncheck for reachable vulnerabilities",
-      "A gitleaks scan of the full git history on every release",
+      "The local gate includes a gitleaks history scan and race checks",
     ],
   },
   {
@@ -303,12 +304,12 @@ const agentWebCards = [
   {
     value: "3 vs 11",
     title: "Tool calls",
-    body: "Page tools against clicking through the booking form to the same point. Fewer calls can avoid extra model turns.",
+    body: "Page tools return available slots; the DOM path reaches the details form for one selected slot. Neither path submits a booking.",
   },
   {
-    value: "7 vs 55 KB",
-    title: "Returned to the agent",
-    body: "6.7–7.7 KB through the page tools, about 55 KB of snapshots through the form.",
+    value: "7k vs 55k",
+    title: "Returned text characters",
+    body: "6.7–7.7k result characters through page tools, about 55k through the form. Character counts are not billed tokens.",
   },
   {
     value: "1.2–1.3 s",
@@ -320,7 +321,7 @@ const agentWebCards = [
 const facts = [
   ["starts with", "14 tools"],
   ["fast path", "inline recipes"],
-  ["clients", "MCP + HTTP"],
+  ["clients", "CLI + MCP + HTTP"],
   ["licence", "AGPL-3.0"],
 ];
 
@@ -329,6 +330,7 @@ const footerGroups = [
     title: "brw",
     links: [
       ["brw on GitHub", brwUrl],
+      ["Technical deep dive", deepDiveUrl],
       ["install.sh", installScriptPath],
       ["llms.txt", "/llms.txt"],
     ],
@@ -419,13 +421,14 @@ export default async function HomePage() {
                 See the proof
               </a>
             </div>
+            <p className="hero-version"><a href={deepDiveUrl}>Read the technical deep dive by Max Revitt →</a></p>
             {version ? (
               <p className="hero-version">
                 Latest release{" "}
                 <a href={downloadUrl} target="_blank" rel="noopener noreferrer">
                   <code>{version}</code>
                 </a>{" "}
-                · macOS · Linux · Windows
+                · macOS · Linux
               </p>
             ) : null}
             <dl className="facts-grid">
@@ -436,6 +439,28 @@ export default async function HomePage() {
                 </div>
               ))}
             </dl>
+          </div>
+        </section>
+
+        <section id="release" className="section section-alt">
+          <div className="section-inner">
+            <div className="section-header">
+              <p className="section-kicker">0.20.1 · 2 October 2026</p>
+              <h2>Clear a field. Check the result.</h2>
+              <p>The latest patch fixes empty-value batch assertions. It builds on 0.20’s improvements to targeting, observations and local usage reporting.</p>
+            </div>
+            <div className="support-grid">
+              {releaseHighlights.map((item) => (
+                <article key={item.title} className="info-panel">
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </article>
+              ))}
+            </div>
+            <p className="benchmark-note">
+              <a href="https://github.com/Don-Works/brw/releases/tag/v0.20.1">0.20.1 release notes →</a>{" · "}
+              <a href={deepDiveUrl}>How brw’s refs, observations and recipes work →</a>
+            </p>
           </div>
         </section>
 
@@ -537,8 +562,9 @@ export default async function HomePage() {
                   <h3>Act and read the change</h3>
                   <p>
                     Click, type, fill, select, drag, upload or commit. The action
-                    returns URL, focus and changed elements, so the agent does
-                    not spend another turn asking whether it worked.
+                    returns URL, focus and changed elements. A successful click
+                    confirms dispatch; pair it with a wait or assertion of the
+                    application’s result before treating the task as complete.
                   </p>
                 </div>
               </article>
@@ -584,7 +610,7 @@ export default async function HomePage() {
               Reaching a bookable slot on revitt.co/book through its five WebMCP
               tools, against driving the form: three runs each, brw 0.15.2, 25
               September 2026. Tool time was similar; the measured saving is in calls and returned
-              bytes. Billed tokens depend on the agent and model.{" "}
+              text characters. Billed tokens depend on the agent and model.{" "}
               <Link href="/agent-web">
                 What brw does, and how to make a site work this way →
               </Link>
@@ -826,7 +852,7 @@ export default async function HomePage() {
               </table>
             </div>
             <p className="comparison-note">
-              Primary documentation checked 1 October 2026; each tool name links
+              Primary documentation checked 2 October 2026; each tool name links
               to its source. This is a feature comparison, not a matched benchmark.
               No overall speed or success-rate ranking has been established.
               Product names belong to their respective owners; brw is independent.
@@ -882,7 +908,7 @@ export default async function HomePage() {
                   Installs under{" "}
                   <code>~/Library/Application Support/brw</code> on macOS or{" "}
                   <code>~/.local/share/brw</code> on Linux, and symlinks{" "}
-                  <code>brwd</code>, <code>brwctl</code>, <code>brwcheck</code>{" "}
+                  <code>brw</code>, <code>brwd</code>, <code>brwctl</code>, <code>brwcheck</code>{" "}
                   and <code>brw-devtools-mcp</code> into{" "}
                   <code>~/.local/bin</code>. No <code>sudo</code>, nothing
                   outside your home directory.
@@ -968,13 +994,12 @@ export default async function HomePage() {
                   <span className="install-badge install-badge-soon">
                     windows
                   </span>
-                  .msi
+                  packages paused
                 </p>
                 <p>
-                  <code>brw_&lt;version&gt;_windows_amd64.msi</code> and an
-                  arm64 build. Puts the brw commands on PATH and the extension,
-                  tests and licence under{" "}
-                  <code>C:\Program Files\brw\share\</code>.
+                  Current releases do not publish Windows installers. Historical
+                  MSI files are not the current build; use macOS or Linux for
+                  the latest packaged release.
                 </p>
               </div>
             </div>
@@ -1159,7 +1184,7 @@ export default async function HomePage() {
                   <span className="prompt">$ </span>git clone https://github.com/Don-Works/brw.git
                   {"\n"}
                   <span className="prompt">$ </span>cd brw{"\n"}
-                  <span className="prompt">$ </span>make build{"\n"}
+                  <span className="prompt">$ </span>task build{"\n"}
                   <span className="prompt">$ </span>./bin/brwd --mcp --http off
                 </code>
               </pre>
@@ -1180,17 +1205,23 @@ export default async function HomePage() {
           <div className="section-inner">
             <div className="section-header">
               <p className="section-kicker">transports</p>
-              <h2>Two ways brw reaches a browser</h2>
+              <h2>Choose the connection for your browser</h2>
               <p>
                 The extension bridge drives the browser you already use. Direct
                 CDP drives a browser brw launches and owns. They differ in what
-                they can do, and each capability below exists on one of them. The
+                they can do. The table compares these two common setups. The
                 one-line installer sets up the bridge; add the other lane with{" "}
                 <code>brwctl setup --transport direct-cdp</code>, and run both
                 side by side as separate namespaces.
               </p>
             </div>
 
+            <p className="benchmark-note">
+              Chrome’s manual remote-debugging opt-in, an existing local CDP
+              endpoint, and off-host browser providers are also supported.
+              Download, file and session capabilities differ from a browser brw
+              starts itself. <a href={brwInstallDocsUrl + "#transports"}>See the full connection guide →</a>
+            </p>
             <div
               className="comparison-wrap transport-wrap"
               tabIndex={0}

@@ -23,15 +23,15 @@ export const bookingRows: PathRow[] = [
     path: "WebMCP page tools",
     calls: "3",
     toolTime: "1.17–1.34 s",
-    returned: "6.7–7.7 KB",
+    returned: "6.7–7.7k chars",
     result:
-      "brw_open, brw_page_tools, brw_call_page_tool find_available_slots. Slots across several days in one call. One more call, book_meeting, completes the booking.",
+      "brw_open, brw_page_tools, brw_call_page_tool find_available_slots. Slots across several days in one call. An authorized book_meeting call would submit the booking; submission was not tested.",
   },
   {
     path: "Driving the page",
     calls: "11",
     toolTime: "0.84–1.32 s",
-    returned: "~55 KB",
+    returned: "~55k chars",
     result:
       "Open, snapshot, click the meeting type, poll snapshots for dates, click a day, poll for times, click a time, poll for the details form. One day's slots at a time; name, email and submit still to do.",
   },
