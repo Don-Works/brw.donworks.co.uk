@@ -63,3 +63,20 @@ export const measurements = [
     body: "One public-page canary: 30,035 source characters became a 236-character answer-and-source packet. The worker still reads evidence; this is not a total billed-token saving.",
   },
 ];
+
+export const deepDiveUrl = "https://maxrevitt.com/posts/building-brw";
+
+export const releaseHighlights = [
+  {
+    title: "Empty means empty",
+    body: "In 0.20.1, batched assert_value checks accept an empty expected value on both direct CDP and the extension bridge. Non-empty fields still fail the check and stop the batch. Extension 0.7.11 remains current.",
+  },
+  {
+    title: "Controls in context",
+    body: "0.20 prioritises active-dialog controls and exposes styled native checkboxes. Trusted clicks verify their targets and refuse inactive tabs until explicitly focused. An action receipt still needs an application postcondition.",
+  },
+  {
+    title: "Measure the work",
+    body: "Use brw usage to inspect local operation timings, outcomes and payload sizes. HTTP, MCP, CLI and optional-reader records are separate measurement boundaries; their totals are not the agent’s complete context or model bill.",
+  },
+];

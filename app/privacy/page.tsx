@@ -29,7 +29,7 @@ export default function PrivacyPage() {
         <div className="section-inner legal-inner">
           <p className="section-kicker">privacy</p>
           <h1>Privacy policy</h1>
-          <p className="legal-updated">Last updated: 10 September 2026</p>
+          <p className="legal-updated">Last updated: 2 October 2026</p>
 
           <p>
             This policy covers the <strong>brw Chrome extension</strong> and the{" "}
@@ -109,6 +109,19 @@ export default function PrivacyPage() {
               brw&apos;s artifact tools.
             </li>
           </ul>
+
+          <h2>Local operational metadata</h2>
+          <p>
+            By default, the daemon keeps an owner-only local ledger of operation
+            names, outcomes, timings and payload sizes. It excludes page content,
+            typed values, URLs, credentials and raw error messages. The active
+            file rotates at 20 MiB and retains seven backups by default. Use
+            <code> brw usage</code> to inspect it or start the daemon with
+            <code> --usage-log off</code> to disable recording. Don Works and
+            Revitt do not receive this ledger. See the
+            <a href="https://github.com/Don-Works/brw/blob/main/docs/usage-logs.md"> usage-log documentation</a>
+            for storage locations and retention controls.
+          </p>
 
           <h2>How the extension works</h2>
           <p>

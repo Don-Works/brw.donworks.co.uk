@@ -24,7 +24,7 @@ import {
 export const metadata: Metadata = {
   title: "Agent surfaces",
   description:
-    "brw uses a site's WebMCP tools, MCP server, llms.txt and markdown before it drives the page. Measured on a booking site: 3 tool calls instead of 11, about 7 KB read instead of 55 KB.",
+    "brw uses a site's WebMCP tools, MCP server, llms.txt and markdown before it drives the page. Measured on a booking site: 3 tool calls instead of 11, about 7k result characters instead of 55k.",
   alternates: {
     canonical: "https://brw.donworks.co.uk/agent-web",
     types: { "text/markdown": "https://brw.donworks.co.uk/agent-web.md" },
@@ -61,15 +61,17 @@ export default function AgentWebPage() {
             When a site exposes tools, an API or markdown for agents, brw uses
             them before it drives the page. On a booking site that registers five
             WebMCP tools, an agent reached a bookable slot in 3 tool calls
-            instead of 11, and read about 7 KB of results instead of about 55 KB.
+            instead of 11, and received about 7k result characters instead of about 55k.
           </p>
 
           <h2>The measured difference</h2>
           <p>
             Target: <a href={bookingExampleUrl} {...external}>revitt.co/book</a>,
             driven through the extension bridge in a real signed-in Chromium,
-            three runs per path. The end state for both: a slot is chosen and the
-            booking can be submitted.
+            three runs per path. Page tools returned available slots across several
+            days; the DOM path reached the details form for one selected slot.
+            Neither path submitted a booking. Returned sizes count result text
+            characters, not tokens or UTF-8 bytes.
           </p>
           <div
             className="comparison-wrap transport-wrap"
@@ -79,7 +81,7 @@ export default function AgentWebPage() {
           >
             <table className="comparison-table transport-table agent-web-table">
               <caption className="sr-only">
-                Tool calls, tool time and bytes returned for the WebMCP path and
+                Tool calls, tool time and characters returned for the WebMCP path and
                 the DOM path on the same booking flow
               </caption>
               <thead>
@@ -106,8 +108,7 @@ export default function AgentWebPage() {
           </div>
           <p className="agent-web-after-table">
             Tool time is similar on both paths. The saving is in agent round
-            trips, which may each require another model turn, and in the bytes the agent
-            reads, which are tokens.{" "}
+            trips, which may each require another model turn, and in the text characters returned. Character counts do not establish billed-token savings.{" "}
             <a href={brwBookingRunUrl} {...external}>
               Method and raw ranges
             </a>
