@@ -1,4 +1,4 @@
-import { comparisonRows, measurements, deepDiveUrl, releaseHighlights } from "@/lib/siteEvidence";
+import { comparisonRows, measurements, deepDiveUrl, pageWatchersDocsUrl, releaseHighlights } from "@/lib/siteEvidence";
 
 export function GET() {
   return new Response(
@@ -16,7 +16,7 @@ export function GET() {
       "",
       `- Technical deep dive: ${deepDiveUrl}`,
       "",
-      "## Release 0.20.1 (2 October 2026)",
+      "## Release 0.21.0 (6 October 2026)",
       "",
       ...releaseHighlights.map((item) => `${item.title}: ${item.body}`),
       "",
@@ -42,6 +42,7 @@ export function GET() {
       "- Acts by ref: click, type, fill, select, press, scroll, hover, drag, upload, commit, wait and assert.",
       "- Returns a post-action observation instead of requiring a confirmation screenshot or re-snapshot.",
       "- Batch, plan, cancellation, cheap change observation and trace-to-replay for multi-step work.",
+      "- Persistent page watchers: title, selected text or element count; durable registrations and cursor-based change events. Maix can bind activity to an identity follow-up.",
       "- Deterministic recipes: pass a recipe object directly or use metadata-only provider search with immutable id/version/digest pins. Both paths enforce exact origins, declared risk and postconditions.",
       "- Tabs, tab leases and tab groups; background opens do not steal OS focus.",
       "- Uses a site's agent surfaces before its human UI: WebMCP page tools, declared MCP and API endpoints, llms.txt and markdown. See Agent surfaces below.",
@@ -63,6 +64,17 @@ export function GET() {
       "- `brw_read_url`: no tab, no cookies. Negotiates markdown, then reports `agent_surfaces` (llms.txt, .md twins, `<link rel=alternate type=text/markdown>`, RFC 9727 /.well-known/api-catalog, MCP server cards in /.well-known/ai-catalog.json, /.well-known/ucp, A2A agent card; ai-plugin.json as deprecated), `content_signal`, `markdown_tokens` and `fallback_hint` (login_wall, js_shell, challenge, auth_required) when the agent should step up to a real tab. User-Agent: `brw/<version> (+https://brw.donworks.co.uk)`.",
       "",
       "Measured 25 September 2026, brw 0.15.2, real signed-in Chromium via the extension bridge, https://revitt.co/book (5 WebMCP tools), page tools returning available slots while the DOM path reached the details form for a selected slot, with neither submitting, 3 runs each: WebMCP path 3 tool calls, 1.17–1.34 s tool time, 6.7–7.7k result text characters; DOM path 11 tool calls, 0.84–1.32 s, about 55k result text characters. Tool time is similar; the difference is in calls and text returned, not a measured billed-token saving.",
+      "",
+      "## Persistent page watchers (v0.21.0)",
+      "",
+      `- Contract: ${pageWatchersDocsUrl}`,
+      "- Register: brw_watch_page { id: \"inbox-activity\", url: \"https://example.com/inbox\", selector: \"#messages\", mode: \"text\", interval_ms: 5000 }. Substitute the exact URL of the signed-in page, including its path, query and fragment, and a selector verified on that page. id is optional. mode is title, text or count; use selector to choose the area for text or count.",
+      "- Manage: brw_page_watchers { action: \"list\" }; actions also include pause, resume and remove for a watcher. Pause keeps the registration, history and tab. Remove deletes the registration and history and closes the owned tab. If the tab is closed, explicit resume recreates it while retaining the baseline.",
+      "- Read: brw_page_events { watcher_id: \"inbox-activity\", since_seq: 0, limit: 20 }. Keep the returned cursor for the next read and check explicit gap reporting before assuming all events were retained.",
+      "- Registrations, baseline digests and queued event metadata survive daemon restarts. Each watcher owns a background tab. The first sample establishes a baseline; unchanged samples produce no event. No page text is included in events.",
+      "- Availability transitions also produce events: an unexpected URL or login redirect, lost connection, and recovery can prompt the agent to inspect and restore access. A repeated unchanged failure emits no additional status event.",
+      "- interval_ms sets sampling from 1000 to 300000 ms (default 5000). refresh_interval_ms defaults to 0, without reloading; an explicit 5000..3600000 ms interval reloads only the private watcher tab. Keep the signed-in browser running and connected; a daemon restart resumes sampling after the browser reconnects. Login redirects and other URLs are refused. Sampling can miss changes between samples and is not an exact count of incoming chat messages.",
+      "- For Google Chat, a title or selected-area change tells the agent to inspect the allowed page. This registration does not send a chat message. With Maix, mx__page_watchers binds a watcher to a granted identity and follows up on activity; brw itself requires no Maix or model service.",
       "",
       "## Recipes",
       "",

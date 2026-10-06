@@ -65,18 +65,19 @@ export const measurements = [
 ];
 
 export const deepDiveUrl = "https://maxrevitt.com/posts/building-brw";
+export const pageWatchersDocsUrl = "https://github.com/Don-Works/brw/blob/main/docs/page-watchers.md";
 
 export const releaseHighlights = [
   {
-    title: "Empty means empty",
-    body: "In 0.20.1, batched assert_value checks accept an empty expected value on both direct CDP and the extension bridge. Non-empty fields still fail the check and stop the batch. Extension 0.7.11 remains current.",
+    title: "Register once, observe later",
+    body: "0.21 adds persistent page watchers for a title, selected text or element count. Registrations, change digests and queued event metadata survive daemon restarts. The first sample establishes a baseline; unchanged samples stay quiet.",
   },
   {
-    title: "Controls in context",
-    body: "0.20 prioritises active-dialog controls and exposes styled native checkboxes. Trusted clicks verify their targets and refuse inactive tabs until explicitly focused. An action receipt still needs an application postcondition.",
+    title: "Follow up on activity",
+    body: "Read events with a per-watcher cursor, then let your agent inspect the allowed page. Maix can bind a watcher to a granted identity and trigger a follow-up on activity or availability changes, including a login redirect or recovery. Google Chat is one use case; a page change is a signal to check.",
   },
   {
-    title: "Measure the work",
-    body: "Use brw usage to inspect local operation timings, outcomes and payload sizes. HTTP, MCP, CLI and optional-reader records are separate measurement boundaries; their totals are not the agent’s complete context or model bill.",
+    title: "Keep the browser connected",
+    body: "Watchers sample their own background tabs every five seconds by default. The signed-in browser must remain running and connected. Events contain change metadata, without page text, and sampling refuses login redirects or another page.",
   },
 ];
