@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BrwMark } from "./components/BrwMark";
 import {
   BadgeCheck,
+  Bell,
   Bot,
   Check,
   Eye,
@@ -25,7 +26,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { getLatestRelease } from "@/lib/latestRelease";
-import { comparisonRows, measurements, deepDiveUrl, releaseHighlights } from "@/lib/siteEvidence";
+import { comparisonRows, measurements, deepDiveUrl, pageWatchersDocsUrl, releaseHighlights } from "@/lib/siteEvidence";
 
 type PanelItem = {
   label: string;
@@ -102,6 +103,20 @@ const capabilityGroups: CapabilityGroup[] = [
       "Cancel in-flight work and observe page changes",
       "Choose a read settle budget after checking readiness",
       "Trace a successful flow back into a replayable batch",
+    ],
+  },
+  {
+    label: "watch",
+    title: "Persistent page activity",
+    body: "Register a page once and give your agent a reason to return when it changes.",
+    icon: Bell,
+    items: [
+      "Watch a page title, selected text or element count",
+      "Keep registrations, digests and event metadata across daemon restarts",
+      "Read queued changes with a per-watcher cursor and explicit gap reporting",
+      "Notice availability changes, including login redirects and recovery",
+      "Pause, resume or remove watchers without taking over your current tab",
+      "Bind activity to an identity follow-up through Maix",
     ],
   },
   {
@@ -445,9 +460,9 @@ export default async function HomePage() {
         <section id="release" className="section section-alt">
           <div className="section-inner">
             <div className="section-header">
-              <p className="section-kicker">0.20.1 · 2 October 2026</p>
-              <h2>Clear a field. Check the result.</h2>
-              <p>The latest patch fixes empty-value batch assertions. It builds on 0.20’s improvements to targeting, observations and local usage reporting.</p>
+              <p className="section-kicker">0.21.0 · 6 October 2026</p>
+              <h2>Give your agent a reason to come back.</h2>
+              <p>Persistent page watchers turn sampled activity into durable events. Your agent can follow up when an allowed page changes, including through an identity-bound watcher in Maix.</p>
             </div>
             <div className="support-grid">
               {releaseHighlights.map((item) => (
@@ -458,8 +473,8 @@ export default async function HomePage() {
               ))}
             </div>
             <p className="benchmark-note">
-              <a href="https://github.com/Don-Works/brw/releases/tag/v0.20.1">0.20.1 release notes →</a>{" · "}
-              <a href={deepDiveUrl}>How brw’s refs, observations and recipes work →</a>
+              <a href="https://github.com/Don-Works/brw/releases/tag/v0.21.0">0.21.0 release notes →</a>{" · "}
+              <a href={pageWatchersDocsUrl}>Page watcher contract →</a>
             </p>
           </div>
         </section>
@@ -614,6 +629,70 @@ export default async function HomePage() {
               <Link href="/agent-web">
                 What brw does, and how to make a site work this way →
               </Link>
+            </p>
+          </div>
+        </section>
+
+        <section id="page-watchers" className="section section-alt">
+          <div className="section-inner recipe-layout">
+            <div className="section-header">
+              <p className="section-kicker">page watchers</p>
+              <h2>Notice activity. Then inspect what changed.</h2>
+              <p>
+                Watch a signed-in page such as Google Chat for a title change,
+                or select a specific area to watch its text or element count.
+                brw keeps a background tab and queues change metadata. The
+                agent can then read the allowed page and decide whether to
+                follow up. Availability transitions also signal when the page
+                needs attention, such as a login redirect, or has recovered.
+                Maix binds those signals to a granted identity.
+              </p>
+              <Link
+                href={pageWatchersDocsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-link"
+              >
+                Register and manage a watcher →
+              </Link>
+            </div>
+            <div>
+              <pre tabIndex={0} className="codeblock">
+                <code>{`brw_watch_page {
+  "id": "inbox-activity",
+  "url": "https://example.com/inbox",
+  "selector": "#messages",
+  "mode": "text",
+  "interval_ms": 5000
+}
+
+brw_page_events {
+  "watcher_id": "inbox-activity",
+  "since_seq": 0,
+  "limit": 20
+}
+
+brw_page_watchers { "action": "list" }`}</code>
+              </pre>
+              <p className="benchmark-note">
+                Use the exact URL of your signed-in page, including its path,
+                query and fragment. The first sample sets a baseline. Later changes produce events
+                without page text; unchanged samples produce none. Save the
+                returned cursor for the next read and check for a reported gap.
+                Availability events are emitted when status changes, rather
+                than on every failed sample.
+              </p>
+            </div>
+            <p className="feature-footnote">
+              Sampling runs every five seconds by default and can miss changes
+              between samples. A title change does not identify every incoming
+              message. Pages are not reloaded by default; an optional{" "}
+              <code>refresh_interval_ms</code> reloads only the watcher&apos;s
+              own tab. Keep the signed-in browser running and connected;
+              registrations survive a daemon restart, but sampling waits for
+              the browser to reconnect. Watchers refuse login redirects or
+              other pages. Pause, resume or remove them with{" "}
+              <code>brw_page_watchers</code>.
             </p>
           </div>
         </section>

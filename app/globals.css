@@ -677,6 +677,10 @@ a {
   gap: 1.25rem;
 }
 
+.recipe-layout > * {
+  min-width: 0;
+}
+
 .recipe-console {
   border: 1px solid color-mix(in srgb, var(--color-magenta) 58%, var(--color-border));
   background: color-mix(in srgb, var(--color-surface) 92%, transparent);

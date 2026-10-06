@@ -80,7 +80,7 @@ export default function ExtensionPrivacyPage() {
         <div className="section-inner legal-inner">
           <p className="section-kicker">extension privacy</p>
           <h1>brw extension privacy policy</h1>
-          <p className="legal-updated">Last updated: 11 September 2026</p>
+          <p className="legal-updated">Last updated: 6 October 2026</p>
 
           <p>
             This policy covers the <strong>brw browser extension</strong>,
@@ -174,8 +174,11 @@ export default function ExtensionPrivacyPage() {
           </ul>
           <p>
             The extension relays these observations to the local daemon and
-            retains none of them itself. Nothing is stored for later, sent
-            anywhere else, or aggregated.
+            retains none of them itself. Requested page watchers use this same
+            transport to sample a background tab; the daemon retains their
+            registration, change digest and bounded event metadata locally,
+            without page text in events. No observations are sent to Don Works
+            or Revitt.
           </p>
 
           <h2>What the extension refuses</h2>
@@ -267,6 +270,22 @@ export default function ExtensionPrivacyPage() {
               daemon in an owner-only local directory with size and retention
               limits, and can be listed and deleted with brw&apos;s artifact
               tools.
+            </li>
+            <li>
+              Persistent page-watcher registrations, including URL and any
+              selector, change digests and bounded event metadata are retained
+              by the local daemon across restarts. List, pause, resume or remove
+              registrations with <code>brw_page_watchers</code>; removing a
+              watcher deletes its registration and event history. The extension
+              stores no watcher history itself. See the{" "}
+              <Link
+                href="https://github.com/Don-Works/brw/blob/main/docs/page-watchers.md"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                page-watcher documentation
+              </Link>
+              .
             </li>
           </ul>
 

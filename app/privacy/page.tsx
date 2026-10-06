@@ -29,7 +29,7 @@ export default function PrivacyPage() {
         <div className="section-inner legal-inner">
           <p className="section-kicker">privacy</p>
           <h1>Privacy policy</h1>
-          <p className="legal-updated">Last updated: 2 October 2026</p>
+          <p className="legal-updated">Last updated: 6 October 2026</p>
 
           <p>
             This policy covers the <strong>brw Chrome extension</strong> and the{" "}
@@ -110,6 +110,29 @@ export default function PrivacyPage() {
             </li>
           </ul>
 
+          <h2>Persistent page watchers</h2>
+          <p>
+            When you register a watcher, the daemon samples the page title,
+            selected text or element count in a background tab. It stores the
+            registration, including the URL and any selector, a change digest
+            and bounded event metadata locally so the watcher can continue
+            after a daemon restart. Events do not contain page text. Your
+            configured client can read those events and choose to inspect the
+            page. An orchestrator such as Maix can use them to trigger an agent
+            follow-up under its own identity grants.
+          </p>
+          <p>
+            List, pause, resume or remove registrations with{" "}
+            <code>brw_page_watchers</code>. Removing a watcher deletes its
+            registration and event history. Sampling requires the browser to
+            remain running and connected. Don Works and Revitt receive no
+            watcher data. Storage and event limits are described in the{" "}
+            <a href="https://github.com/Don-Works/brw/blob/main/docs/page-watchers.md">
+              page-watcher documentation
+            </a>
+            .
+          </p>
+
           <h2>Local operational metadata</h2>
           <p>
             By default, the daemon keeps an owner-only local ledger of operation
@@ -141,9 +164,12 @@ export default function PrivacyPage() {
             You can disable browser control at any time in the extension&apos;s
             Options page; this closes the daemon connection and releases tabs
             attached through the debugger. Uninstalling the extension removes
-            its Chrome-local settings. Explicit artifacts and daemon
-            configuration stay in your local brw data directory until you
-            delete them with brw&apos;s artifact tools or from that directory.
+            its Chrome-local settings. Watcher registrations can be paused or
+            removed, along with their event history, through{" "}
+            <code>brw_page_watchers</code>. Explicit artifacts
+            and daemon configuration stay in your local brw data directory
+            until you delete them with brw&apos;s artifact tools or from that
+            directory.
           </p>
 
           <h2>Permissions, and why</h2>
